@@ -1,8 +1,8 @@
-from App.models import User
+from App.models import User, Admin, Alumni, Company
 from App.database import db
 
-def create_user(username, password):
-    newuser = User(username=username, password=password)
+def create_user(username, password, email):
+    newuser = User(username=username, password=password, email=email)
     db.session.add(newuser)
     db.session.commit()
     return newuser
@@ -14,10 +14,10 @@ def get_user(id):
     return User.query.get(id)
 
 def get_all_users():
-    return User.query.all()
+    return db.session.query(Admin).all() + db.session.query(Alumni).all() + db.session.query(Company).all()
 
 def get_all_users_json():
-    users = User.query.all()
+    users = get_all_users()
     if not users:
         return []
     users = [user.get_json() for user in users]
