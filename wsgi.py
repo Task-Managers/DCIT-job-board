@@ -4,9 +4,11 @@ from flask.cli import with_appcontext, AppGroup
 
 from App.database import db, get_migrate
 from App.main import create_app
-from App.controllers import ( create_user, get_all_users_json, get_all_users )
+from App.controllers import ( create_user, get_all_users_json, get_all_users,
+     add_admin, add_alumni, add_company, add_listing, get_all_listings )
 
 # This commands file allow you to create convenient CLI commands for testing controllers
+# test
 
 app = create_app()
 migrate = get_migrate(app)
@@ -16,7 +18,22 @@ migrate = get_migrate(app)
 def initialize():
     db.drop_all()
     db.create_all()
-    create_user('bob', 'bobpass')
+
+    # add in the first admin
+    add_admin('bob', 'bobpass', 'bob@mail')
+
+    # add in alumni
+    add_alumni('rob', 'robpass', 'rob@mail', '12345')
+
+    # add in companies
+    add_company('company1', 'compass', 'company@mail')
+
+    # add in listings
+    add_listing('listing1', 'job description')
+    print(get_all_listings())
+    
+    # print all user
+    print(get_all_users())
     print('database intialized')
 
 '''
@@ -30,12 +47,12 @@ User Commands
 user_cli = AppGroup('user', help='User object commands') 
 
 # Then define the command and any parameters and annotate it with the group (@)
-@user_cli.command("create", help="Creates a user")
-@click.argument("username", default="rob")
-@click.argument("password", default="robpass")
-def create_user_command(username, password):
-    create_user(username, password)
-    print(f'{username} created!')
+# @user_cli.command("create", help="Creates a user")
+# @click.argument("username", default="rob")
+# @click.argument("password", default="robpass")
+# def create_user_command(username, password):
+#     create_user(username, password)
+#     print(f'{username} created!')
 
 # this command will be : flask user create bob bobpass
 
@@ -48,6 +65,12 @@ def list_user_command(format):
         print(get_all_users_json())
 
 app.cli.add_command(user_cli) # add the group to the cli
+
+# add in command groups and commands for:
+# - admin
+# - alumni 
+# - business 
+# - listing
 
 '''
 Test Commands
