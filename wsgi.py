@@ -8,7 +8,7 @@ from App.controllers import ( create_user, get_all_users_json, get_all_users,
      add_admin, add_alumni, add_company, add_listing, get_all_listings )
 
 # This commands file allow you to create convenient CLI commands for testing controllers
-# test
+# test to see where this gets pushed to
 
 app = create_app()
 migrate = get_migrate(app)
