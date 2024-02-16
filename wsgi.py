@@ -5,10 +5,11 @@ from flask.cli import with_appcontext, AppGroup
 from App.database import db, get_migrate
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users,
-     add_admin, add_alumni, add_company, add_listing, get_all_listings )
+     add_admin, add_alumni, add_company, add_listing, 
+     get_all_listings, get_all_listings_json )
 
 # This commands file allow you to create convenient CLI commands for testing controllers
-# test
+# test to see where this gets pushed to
 
 app = create_app()
 migrate = get_migrate(app)
@@ -22,15 +23,19 @@ def initialize():
     # add in the first admin
     add_admin('bob', 'bobpass', 'bob@mail')
 
+    add_admin('bob2', 'bobpass', 'bob@mail2')
+
     # add in alumni
     add_alumni('rob', 'robpass', 'rob@mail', '12345')
+    add_alumni('rob2', 'robpass', 'rob@mail2', '123452')
 
     # add in companies
-    add_company('company1', 'compass', 'company@mail')
+    add_company('rep.name', 'company1', 'compass', 'company@mail')
+    add_company('rep.name2', 'company2', 'compass', 'company@mail2')
 
     # add in listings
-    add_listing('listing1', 'job description')
-    print(get_all_listings())
+    add_listing('listing1', 'job description', 'Company2')
+    print(get_all_listings_json())
     
     # print all user
     print(get_all_users())
