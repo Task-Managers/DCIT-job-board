@@ -13,14 +13,14 @@ def add_company(username, company_name, password, email):
             db.session.rollback()
             return None
 
-def add_listing(title, description, company_name):
+def add_listing(title, description, company_name, job_category=None):
 
     # manually validate that the company actually exists
     company = get_company_by_name(company_name)
     if not company:
         return None
 
-    newListing = Listing(title, description, company_name)
+    newListing = Listing(title, description, company_name, job_category)
     try:
         db.session.add(newListing)
         db.session.commit()

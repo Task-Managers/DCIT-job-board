@@ -9,6 +9,9 @@ class Listing(db.Model):
     # position type, options for remote, employment term, tt national, job areas, desired cand. type, level
     # use enums/ predetermined types maybe for some
 
+    categories = ['Software Engineering', 'Database', 'Programming', 'N/A']
+    job_category = db.Column(db.String(120))
+
 
     # set up relationship with Company (M-1)
     # company = db.Column(db.String(), db.ForeignKey('company.username'))
@@ -16,32 +19,29 @@ class Listing(db.Model):
 
     company_name = db.Column(db.String(), db.ForeignKey('company.company_name'), nullable=False)
     companies = db.relationship('Company', back_populates='listings', overlaps="company")
-    
-    # Define the relationship back to the Company model
-    # company = db.relationship('Company', back_populates='listings', uselist=False, cascade="save-update, merge")
-
-    # reviewerID = db.Column(
-    #   db.String(10),
-    #   db.ForeignKey('staff.ID'))  #each review has 1 creator
-
-    #create reverse relationship from Staff back to Review to access reviews created by a specific staff member
-#   reviewer = db.relationship('Staff',
-#                              backref=db.backref('reviews_created',
-#                                                 lazy='joined'),
-#                              foreign_keys=[reviewerID])
 
     # relationship with alumni?
     # each listing has applicants/alumni applied to it
+    # subscribers = db.Column(db.String(), db.ForeignKey())
 
-    def __init__(self, title, description, company_name):
+    def __init__(self, title, description, company_name, job_category):
         self.title = title
         self.description = description
         self.company_name = company_name
+
+        if job_category is None:
+            self.job_category = 'N/A'
+
+        if job_category in self.categories:
+            self.job_category = job_category
+        else:
+            self.job_category = 'N/A'
 
     def get_json(self):
         return{
             'id': self.id,
             'title':self.title,
             'description':self.description,
-            'company_name':self.company_name
+            'company_name':self.company_name,
+            'job_category':self.job_category,
         }
