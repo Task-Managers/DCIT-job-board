@@ -6,10 +6,16 @@ from App.database import db, get_migrate
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users,
      add_admin, add_alumni, add_company, add_listing, 
-     get_all_listings, get_all_listings_json, subscribe_action )
+     get_all_listings, get_all_listings_json, get_company_listings,
+    subscribe_action, add_categories, )
 
 # This commands file allow you to create convenient CLI commands for testing controllers
 # test to see where this gets pushed to
+
+# TODO:
+# FIX ADDING IN CATEGORIES AND ALSO VALIDATING CATEGORES - FOR ALUMNI AND LISTING
+# CHECK ALUMNI CONTROLLER FOR ADD_cATEGORIES FIRST, IT NOT SAVING TO DB?
+# WHAT HAPPENS IF YOU ADD AN INVALID CATEOGORY USING THE CONTROLLER? - FOR ALUMNI AND LISTING
 
 app = create_app()
 migrate = get_migrate(app)
@@ -29,6 +35,9 @@ def initialize():
     add_alumni('rob', 'robpass', 'rob@mail', '12345')
     add_alumni('rob2', 'robpass', 'rob@mail2', '123452')
 
+    print(add_categories('12345', ['Database']))
+    # print('test')
+
     # subscribe rob
     subscribe_action('12345')
 
@@ -38,8 +47,9 @@ def initialize():
 
     # add in listings
     add_listing('listing1', 'job description', 'company2')
-    add_listing('listing2', 'job description', 'company2', 'Database')
+    add_listing('listing2', 'job description', 'company2', ['Database', 'Programming', 'butt'])
     print(get_all_listings_json())
+    # print(get_company_listings('company2'))
     
     # print all user
     print(get_all_users())

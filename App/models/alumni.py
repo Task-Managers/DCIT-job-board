@@ -1,5 +1,8 @@
 from App.database import db
 from .user import User
+from .listing import categories
+
+# categories = ['Software Engineering', 'Database', 'Programming', 'N/A']
 
 class Alumni(User):
     id = db.Column(db.Integer, primary_key = True)
@@ -14,10 +17,39 @@ class Alumni(User):
     # relationship to listings to receive notifications?
     subscribed = db.Column(db.Boolean, default=False)
 
+    # categories = ['Software Engineering', 'Database', 'Programming', 'N/A']
+    job_category = db.Column(db.String(120))
 
     def __init__(self, username, password, email, alumni_id):
         super().__init__(username, password, email)
         self.alumni_id = alumni_id
+
+        # if job_category is None:
+        #     self.job_category = 'N/A'
+
+        # if job_category in self.categories:
+        #     self.job_category = job_category
+        # else:
+        #     self.job_category = 'N/A'
+
+    def get_categories(self):
+        return self.job_category.split('|') if self.job_category else []
+
+    def add_category(self, category):
+        categories = self.get_categories()
+        if category not in categories:
+            categories.append(category)
+            self.job_category = '|'.join(categories)
+        else:
+            print(f"Category '{category}' already exists.")
+
+    def remove_category(self, category):
+        categories = self.get_categories()
+        if category in categories:
+            categories.remove(category)
+            self.job_category = '|'.join(categories)
+        else:
+            print(f"Category '{category}' does not exist.")
 
     def get_alumni_id(self):
         return self.alumni_id
@@ -29,4 +61,5 @@ class Alumni(User):
             'email': self.email,
             'alumni_id': self.alumni_id,
             'subscribed': self.subscribed,
+            'job_category': self.get_categories(),
         }

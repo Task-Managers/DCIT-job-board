@@ -31,3 +31,11 @@ def add_listing(title, description, company_name, job_category=None):
 
 def get_company_by_name(company_name):
     return Company.query.filter_by(company_name=company_name).first()
+
+def get_company_listings(company_name):
+    # return Listing.query.filter_by(company_name=company_name)
+    company = get_company_by_name(company_name)
+    
+    # for listing in company.listings:
+    #     print(listing.get_json())
+    return company.listings

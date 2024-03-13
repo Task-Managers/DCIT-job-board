@@ -44,6 +44,18 @@ def subscribe_action(alumni_id, job_category=None):
     db.session.add(alumni)
     return db.session.commit()
         
+# adding and removing job categories 
+def add_categories(alumni_id, job_categories):
+    alumni = get_alumni(alumni_id)
+    try:
+        for category in job_categories:
+            alumni.add_category(job_categories)
+            print(alumni.get_categories())
+            db.session.commit()
+        return alumni
+    except:
+        db.session.rollback()
+        return None   
 
 # how to do notifications?
 # when listing is made, get all users who are subscribed
