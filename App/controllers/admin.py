@@ -12,7 +12,15 @@ def add_admin(username, password, email):
             db.session.rollback()
             return None
 
+def get_all_admins():
+    return db.session.query(Admin).all()
 
+def get_all_admins_json():
+    admins = get_all_admins()
+    if not admins:
+        return []
+    admins = [admin.get_json() for admin in admins]
+    return admins
 
 # delete other users
 

@@ -1,7 +1,7 @@
 from App.database import db
 from .company import Company
 
-categories = ['Software Engineering', 'Database', 'Programming', 'N/A']
+categories = ['Software Engineering', 'Database', 'Programming', 'Web Design', 'Machine Learning', 'Big Data', 'Algorithms', 'N/A']
 
 class Listing(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -36,18 +36,9 @@ class Listing(db.Model):
             self.job_category = 'N/A'
         else:
             self.validate_and_set_categories(job_categories)
-        # if job_categories is None:
-        #     self.job_category = 'N/A'
 
-        # for category in job_categories:
-        #     if category not in self.categories:
-        #         raise ValueError(f"Invalid job category: {category}")
-        # self.job_category = categories
-
-        # if job_categories in self.categories:
-        #     self.job_category = job_category
-        # else:
-        #     self.job_category = 'N/A'
+    def get_company(self):
+        return self.company_name
 
     # methods to support adding, removing, validating the job categories
     def validate_and_set_categories(self, job_categories):

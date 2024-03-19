@@ -23,6 +23,12 @@ class Alumni(User):
     def __init__(self, username, password, email, alumni_id):
         super().__init__(username, password, email)
         self.alumni_id = alumni_id
+        self.job_category = 'N/A'
+
+        # if job_categories is None:
+        #     self.job_category = 'N/A'
+        # else:
+        #     self.validate_and_set_categories(job_categories)
 
         # if job_category is None:
         #     self.job_category = 'N/A'
@@ -31,6 +37,15 @@ class Alumni(User):
         #     self.job_category = job_category
         # else:
         #     self.job_category = 'N/A'
+
+    # methods to support adding, removing, validating the job categories
+    # def validate_and_set_categories(self, job_categories):
+    #     valid_categories = [category for category in job_categories if category in categories]
+    #     # for category in job_categories:
+    #     #     if category not in categories:
+    #     #         raise ValueError(f"Invalid job category: {category}")
+    #     # self.job_category = '|'.join(job_categories)
+    #     self.job_category = '|'.join(valid_categories)
 
     def get_categories(self):
         return self.job_category.split('|') if self.job_category else []
