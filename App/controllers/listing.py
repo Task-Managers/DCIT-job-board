@@ -4,7 +4,7 @@ from App.database import db
 # add in getters, maybe put setters in company controllers
 
 def get_listing(id):
-    return User.query.get(id)
+    return Listing.query.filter_by(id=id).first()
 
 def get_all_listings():
     return Listing.query.all()
