@@ -12,10 +12,15 @@ class Alumni(User):
 
     # relationship to companies 
     # company_name = db.Column(db.String(), db.ForeignKey('company.company_name'), nullable=False)
-    # companies = db.relationship('Company', back_populates='subscribers', overlaps="company")
+    # companies = db.relationship('Company', back_populates='applicants', overlaps="company")
+
+    # Define relationship to listings
+    listing = db.relationship('Listing', secondary='alumni_listings', back_populates='applicant')
 
     # relationship to listings to receive notifications?
     subscribed = db.Column(db.Boolean, default=False)
+
+    
 
     # categories = ['Software Engineering', 'Database', 'Programming', 'N/A']
     job_category = db.Column(db.String(120))

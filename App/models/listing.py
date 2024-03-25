@@ -1,11 +1,20 @@
 from App.database import db
 from .company import Company
+# from .alumni import Alumni
 
+# categories list for possible job categories
 categories = ['Software Engineering', 'Database', 'Programming', 'Web Design', 'Machine Learning', 'Big Data', 'Algorithms', 'N/A']
+
+# Association Table for Alumni and Listings (Many-to-Many)
+alumni_listings_association = db.Table(
+    'alumni_listings',
+    db.Column('alumni_id', db.Integer, db.ForeignKey('alumni.id')),
+    db.Column('listing_id', db.Integer, db.ForeignKey('listing.id'))
+)
 
 class Listing(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.String(120), nullable = False)
+    title = db.Column(db.String(120), nullable = False, unique=True)
     description = db.Column(db.String(500))
     # insert other information later:
     # position type, options for remote, employment term, tt national, job areas, desired cand. type, level
@@ -17,15 +26,16 @@ class Listing(db.Model):
 
 
     # set up relationship with Company (M-1)
-    # company = db.Column(db.String(), db.ForeignKey('company.username'))
-    # lister = db.relationship('Company')
-
     company_name = db.Column(db.String(), db.ForeignKey('company.company_name'), nullable=False)
     companies = db.relationship('Company', back_populates='listings', overlaps="company")
 
-    # relationship with alumni?
+    # relationship with alumni
     # each listing has applicants/alumni applied to it
-    # subscribers = db.Column(db.String(), db.ForeignKey())
+
+
+    # Define relationship to Alumni
+    applicant = db.relationship('Alumni', secondary='alumni_listings', back_populates='listing')
+    # applicants = db.relationship('Alumni', secondary=alumni_listings_association, backref='applied_listings')
 
     def __init__(self, title, description, company_name, job_categories):
         self.title = title
@@ -51,6 +61,9 @@ class Listing(db.Model):
 
     def get_categories(self):
         return self.job_category.split('|') if self.job_category else []
+
+    def get_applicants(self):
+        return self.applicant
 
     def add_category(self, category):
         categories = self.get_categories()
