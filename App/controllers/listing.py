@@ -6,8 +6,15 @@ from App.database import db
 def get_listing(id):
     return Listing.query.filter_by(id=id).first()
 
+def get_listing_title(listing_title):
+    return Listing.query.filter_by(title=listing_title).first()
+
 def get_all_listings():
     return Listing.query.all()
+
+def get_all_applicants(id):
+    listing = get_listing(id)
+    return listing.get_applicants()
 
 def get_all_listings_json():
     listings = get_all_listings()

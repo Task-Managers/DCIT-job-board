@@ -8,7 +8,7 @@ from App.controllers import ( create_user, get_all_users_json, get_all_users, ge
      add_admin, add_alumni, add_company, add_listing, add_categories,
      get_all_companies, get_all_companies_json,
      get_all_alumni, get_all_alumni_json, get_all_listings, get_all_listings_json, get_company_listings, get_all_subscribed_alumni,
-    subscribe_action, is_alumni_subscribed, send_notification )
+     subscribe_action, is_alumni_subscribed, send_notification, apply_listing, get_all_applicants)
 
 # This commands file allow you to create convenient CLI commands for testing controllers
 # test to see where this gets pushed to
@@ -18,7 +18,12 @@ from App.controllers import ( create_user, get_all_users_json, get_all_users, ge
 # REMOVE 'N/A' FROM LISTINGS WHEN A NEW CATEGORY IS ADDED, AND ADD BACK N/A IF ALL ARE REMOVED
 # ADD IN METHOD TO ADD CATEGORIES FOR A LISTING
 # ADD IN METHODS TO DELETE/EDIT MODELS, ESPECIALLY THE CATEGORIES IN LISTING AND ALUMNI
-# FIGURE OUT HOW TO APPLY WITH ALUMNI
+
+# FIGURE OUT HOW TO APPLY WITH ALUMNI 
+# - alumni should apply to listings
+# - each alumni could apply to many listings and each listing can have many applicants
+
+# OR, AN APPLICATION MODEL NEEDS TO BE MADE WITH THE LISTING_ID AND USER_ID
 
 app = create_app()
 migrate = get_migrate(app)
@@ -51,8 +56,8 @@ def initialize():
     # listing1 = add_listing('listing1', 'job description', 'company2')
     # print(listing1, 'test')
     add_listing('listing2', 'job description', 'company2', ['Database', 'Programming', 'butt'])
-    print(get_all_listings_json())
-    # print(get_company_listings('company2'))
+    # print(get_all_listings_json())
+    print(get_company_listings('company2'))
     
     # print all user
     # print(get_all_users())
@@ -184,6 +189,16 @@ def add_categories_command(alumni_id, job_categories):
         print(f'{alumni} categories added!')
 
 # flask alumni apply
+@alumni_cli.command("apply", help="Applies an alumni to a job listing")
+@click.argument('alumni_id', default='123456789')
+@click.argument('listing_title', default='listing2')
+def apply_listing_command(alumni_id, listing_title):
+    alumni = apply_listing(alumni_id, listing_title)
+
+    if alumni is None:
+        print(f'Error aapplying to listing {listing_title}')
+    else:
+        print(f'{alumni} applied to listing {listing_title}')
 
 app.cli.add_command(alumni_cli)
 
@@ -243,6 +258,17 @@ def add_listing_command(title, description, company_name, job_categories):
         print(f'Error adding categories')
     else:
         print(f'{listing} added!')
+
+# flask listing applicants
+@listing_cli.command("applicants", help="Get all applicants for the listing")
+@click.argument("listing_id", default='1')
+def get_listing_applicants_command(listing_id):
+    applicants = get_all_applicants(listing_id)
+
+    if applicants is None:
+        print(f'Error getting applicants')
+    else:
+        print(applicants)
 
 app.cli.add_command(listing_cli)
 

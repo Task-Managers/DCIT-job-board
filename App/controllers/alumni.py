@@ -1,6 +1,7 @@
 from App.models import User, Alumni, Listing
 from App.database import db
 
+
 def add_alumni(username, password, email, alumni_id):
         newAlumni= Alumni(username, password, email, alumni_id)
         try: # safetey measure for trying to add duplicate 
@@ -67,14 +68,28 @@ def add_categories(alumni_id, job_categories):
         return None   
 
 # apply to an application
-def apply_listing(listing_id):
+def apply_listing(alumni_id, listing_title):
+    from App.controllers import get_listing_title
+
+    alumni = get_alumni(alumni_id)
+
+    # error check to see if alumni exists
+    if alumni is None:
+        return None
 
     # get the listing and then company that made the listing
-    listing = get_listing(listing_id)
-    listing_company = listing.get_company()
+    listing = get_listing_title(listing_title)
+
+    if listing is None:
+        return None
+
+    # add the alumni to the listing applicant
+    listing.applicant.append(alumni)
+    alumni.listing.append(listing)
+
+    #commit changes to the database
+    db.session.commit()
 
     # add the alumni as an applicant to the company model object?
 
-
-
-    return None
+    return alumni

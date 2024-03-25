@@ -14,6 +14,7 @@ class Company(User):
 
     # maybe relationship with alumni? list of alumni as subscribers?
     # applicants?
+    # applicants = db.relationship('Alumni', backref='company', lazy=True)
 
     def __init__(self, username, company_name, password, email):
         super().__init__(username, password, email)
