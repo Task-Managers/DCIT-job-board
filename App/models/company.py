@@ -3,8 +3,11 @@ from .user import User
 
 class Company(User):
     # id = db.Column(db.Integer, primary_key = True)
-    id = db.Column(db.Integer)
-    company_name = db.Column(db.String, primary_key = True)
+    # id = db.Column(db.Integer)
+
+    # company_name = db.Column(db.String, primary_key = True)
+    company_name = db.Column(db.String, unique=True)
+
     # insert other company information here later
         # MAYBE SPECIFY BETWEEN COMPANY AND REPRESENTATIV ATTRIBUTES
      
