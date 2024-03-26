@@ -5,7 +5,7 @@ from .listing import categories
 # categories = ['Software Engineering', 'Database', 'Programming', 'N/A']
 
 class Alumni(User):
-    id = db.Column(db.Integer, primary_key = True)
+    # id = db.Column(db.Integer, primary_key = True)
     alumni_id = db.Column(db.Integer, nullable = False, unique = True)
     # insert other personal info later
 
