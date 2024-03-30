@@ -9,7 +9,8 @@ from App.controllers import ( create_user, get_all_users_json, get_all_users, ge
      get_all_companies, get_all_companies_json,
      get_all_alumni, get_all_alumni_json, get_all_listings, get_all_listings_json, get_company_listings, get_all_subscribed_alumni,
      subscribe_action, is_alumni_subscribed, send_notification, apply_listing, get_all_applicants,
-     get_user_by_username, get_user)
+     get_user_by_username, get_user,
+     login)
 
 # This commands file allow you to create convenient CLI commands for testing controllers
 # test to see where this gets pushed to
@@ -57,8 +58,6 @@ def initialize():
     # print(get_all_listings_json())
     print(get_company_listings('company2'))
     
-    # print all user
-    # print(get_all_users())
 
     # print(get_all_subscribed_alumni())
     # send_notification(['Programming'])

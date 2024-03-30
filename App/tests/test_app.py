@@ -9,6 +9,7 @@ from App.controllers import (
     get_all_users_json,
     login,
     jwt_authenticate_admin,
+    jwt_authenticate,
     get_user,
     get_user_by_username,
     update_user,
@@ -74,6 +75,7 @@ def test_authenticate():
     user = add_admin("bob", "bobpass", 'bob@mail')
     assert login("bob", "bobpass") != None
     token = jwt_authenticate_admin('bob', "bobpass")
+    # token = jwt_authenticate('1', 'bobpass')
     assert token is not None
 
 class UsersIntegrationTests(unittest.TestCase):
