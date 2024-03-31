@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCIT Job Board</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<!-- {%block content%} -->
+<body>
+    <div class="container">
+        <div class="welcome-text">
+            <section>
+                <h3>Welcome to DCIT Job Board – Your Gateway to Tailored Career Opportunities!</h3>
+    
+                <p>DCIT Job Board is a job board specifically designed for industries to advertise job openings
+                    directly to the university of the West Indies alumni.</p>
+    
+                <p>At DCIT Job Board, we bridge the gap between industry and academia, empowering
+                    university alumni and recent graduates with direct access to exclusive job opportunities
+                    tailored to their qualifications and aspirations.</p>
+    
+                <p>Our platform revolutionizes traditional recruitment methods by seamlessly connecting
+                    companies with diverse, skilled talent pools from prestigious universities worldwide. Say
+                    goodbye to costly, inefficient hiring processes and hello to streamlined, effective recruitment!</p>
+               
+                <div class="company-bt">
+                    Ready to showcase your job openings??
+                    <a href="#" id="company-btn">Sign up!</a>
+                </div>
+            </section> 
+        </div>
+        <div class="forms-container">
+            <!-- {% if show_login_form %} -->
+            <div class="form" id="login-form">
+                <h2>Login</h2>
+                <form method="POST" action="/login">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+        
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+        
+                    <button type="submit">Login</button>
+                </form>
+                <div class="signup-bt">
+                    Don't have an account?
+                    <a href="#" id="signup-btn">Signup</a>
+                </div>
+            </div>
+            <!-- {% endif %} -->
+            
+            {% if show_signup_form %}
+            <div class="form" id="signup-form">
+                <h2>Signup</h2>
+                <form method="POST" action="/alumni-signup">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    
+                    <label for="studentid">Student ID:</label>
+                    <input type="text" id="studentid" name="studentid" required>
+        
+                    <label for="email">UWI Email Address:</label>
+                    <input type="email" id="email" name="email" required>
+        
+                    <label for="firstname">First Name:</label>
+                    <input type="text" id="firstname" name="firstname" required>
+        
+                    <label for="lastname">Last Name:</label>
+                    <input type="text" id="lastname" name="lastname" required>
+        
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+        
+                    <button type="submit">Signup</button>
+                </form>
+                <div class="login-bt">
+                    Already have an account?
+                    <a href="#" id="login-btn">Login</a>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if show_company_form %}
+            <div class="form" id="company-form">
+                <h2>Company Signup</h2>
+                <form method="POST" action="/company-signup">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    
+                    <label for="name">Company Name:</label>
+                    <input type="text" id="name" name="name" required>
+        
+                    <label for="address">Company Address:</label>
+                    <input type="text" id="address" name="address" required>
+        
+                    <label for="email">Company Email:</label>
+                    <input type="email" id="email" name="email" required>
+        
+                    <label for="contact">Company Contact Number:</label>
+                    <input type="tel" id="contact" name="contact" required>
+        
+                    <label for="website">Comapny Website</label>
+                    <input type="url" id="website" name="website">
+        
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+        
+                    <button type="submit">Signup</button>
+                </form>
+            </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+<!-- {%endblock%} -->
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const companyForm = document.getElementById('company-form');
+        const companyBtn = document.getElementById('company-btn');
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+    
+        loginBtn.addEventListener('click', function() {
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+        });
+    
+        signupBtn.addEventListener('click', function() {
+            loginForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+        });
+
+        companyBtn.addEventListener('click', function() {
+            loginForm.classList.add('hidden');
+            signupForm.classList.add('hidden');
+            companyForm.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
