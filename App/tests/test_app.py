@@ -13,7 +13,10 @@ from App.controllers import (
     get_user,
     get_user_by_username,
     update_user,
-    add_admin
+    add_admin,
+    add_alumni,
+    add_company,
+    add_listing,
 )
 
 
@@ -80,14 +83,27 @@ def test_authenticate():
 
 class UsersIntegrationTests(unittest.TestCase):
 
-    def test_create_user(self):
+    def test_create_admin(self):
         add_admin("bob", "bobpass", 'bob@mail')
-        user = add_admin("rick", "bobpass", 'rick@mail')
-        assert user.username == "rick"
+        admin = add_admin("rick", "bobpass", 'rick@mail')
+        assert admin.username == "rick"
+
+    def test_create_alumni(self):
+        alumni = add_alumni('rob', 'robpass', 'rob@mail', '123456789')
+        assert alumni.username == 'rob'
+
+    def test_create_company(self):
+        company = add_company('rep.name', 'company1', 'compass', 'company@mail')
+        assert company.username == 'rep.name' and company.company_name == 'company1'
 
     def test_get_all_users_json(self):
         users_json = get_all_users_json()
-        self.assertListEqual([{"id":1, "username":"bob", 'email':'bob@mail'}, {"id":2, "username":"rick", 'email':'rick@mail'}], users_json)
+        self.assertListEqual([
+            {"id":1, "username":"bob", 'email':'bob@mail'},
+            {"id":2, "username":"rick", 'email':'rick@mail'},
+            {"id":1, "username":"rob", "email":"rob@mail", "alumni_id":123456789, "subscribed":False, "job_category":['N/A']},
+            {"id":1, "company_name":"company1", "email":"company@mail"}
+            ], users_json)
 
     # Tests data changes in the database
     # def test_update_user(self):
