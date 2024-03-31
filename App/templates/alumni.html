@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCIT Job Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="file"] {
+            width: 50%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="file"] {
+            cursor: pointer;
+        }
+
+        .form-group input[type="submit"] {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-group input[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        .search {
+            margin-bottom: 20px;
+        }
+        .search input[type="search"],
+        .search select {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 50%;
+            box-sizing: border-box;
+        }
+        .job_card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .job_card:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .job_details {
+            display: flex;
+            align-items: center;
+        }
+        .job_salary {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            margin-left: 10px;
+            width: 50%;
+            height: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            overflow: auto;
+            position: relative;
+        }
+        .close-btn {
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            top: 10px;
+            right: 10px;
+            position: absolute;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>DCIT Job Board</h1>
+        {% if user_is_logged_in %}
+            <button class="logout">Logout</button>
+        {% endif %}
+    </header>
+    <div class="container">
+        <div class="search">
+            <input type="search" placeholder="Search any job here">
+            <select class="categories" id="category">
+                <option>--select an option--</option>
+                {% for category in job_categories %}
+                    <option>{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% for job in jobs %}
+            <div class="job_card" id="jobCard">
+                <div class="job_details">
+                    <div class="text">
+                        <h2>{{ job.title }}</h2>
+                        <span>{{ job.company }} - {{ job.type }}</span>
+                    </div>
+                </div>
+                <div class="job_salary">
+                    <h4>{{ job.salary | default('Undisclosed', true) }}</h4>
+                    <span>{{ job.time_ago }} days ago</span>
+                </div>
+            </div>
+        {% else %}
+            <p>No jobs found.</p>
+        {% endfor %}
+        <div class="popup" id="popup">
+            <div class="popup-content">
+                <button class="close-btn" id="closeBtn">x</button>
+                <h3>{{ selected_job.company_name }}</h3>
+                <h4>{{ selected_job.position_title }}</h4>
+                <p>Description: {{ selected_job.description }}</p>
+                <p>Position Type: {{ selected_job.position_type }}</p>
+                <p>Remote: {{ 'Yes' if selected_job.is_remote else 'No' }}</p>
+                <p>Employment Term: {{ selected_job.employment_term }}</p>
+                <p>Must Be a TT National: {{ 'Yes' if selected_job.must_be_tt_national else 'No' }}</p>
+                <p>Category: {{ selected_job.category }}</p>
+                <p>Desired Candidate Type: {{ selected_job.candidate_type }}</p>
+                <h2>Interested? Send your resume <a href="#" id="applyBtn">now!</a></h2>
+                <div class="form hidden" id="app-form">
+                    <form action="#" method="POST">
+                        <div class="form-group">
+                            <label for="full_name">Full Name:</label>
+                            <input type="text" id="full_name" name="full_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number:</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="resume">Resume (PDF):</label>
+                            <input type="file" id="resume" name="resume" accept=".pdf" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cover_letter">Cover Letter (PDF):</label>
+                            <input type="file" id="cover_letter" name="cover_letter" accept=".pdf" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Submit Application">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const jobCard = document.getElementById('jobCard');
+        const popup = document.getElementById('popup');
+        const closeBtn = document.getElementById('closeBtn');
+        const applyBtn = document.getElementById('applyBtn');
+        const popupContent = document.querySelector('.popup-content'); // Adjusted this
+        const applicationForm = document.getElementById('app-form');
+    
+        jobCard.addEventListener('click', function() {
+            popup.style.display = 'block';
+            popupContent.classList.remove('hidden'); // Ensure content is shown if previously hidden
+            applicationForm.classList.add('hidden'); // Hide form initially
+        });
+    
+        closeBtn.addEventListener('click', function() {
+            popup.style.display = 'none';
+        });
+    
+        applyBtn.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default anchor action
+            applicationForm.classList.remove('hidden'); // Show the form
+            popupContent.style.display = 'none'; // Hide the popup content
+        });
+    </script>
+</body>
+</html>
+
