@@ -1,8 +1,22 @@
-from App.models import User, Alumni, Listing
+from App.models import User, Alumni, Admin, Company, Listing
 from App.database import db
 
 
 def add_alumni(username, password, email, alumni_id):
+
+        # Check if there are no other users with the same username or email values in any other subclass
+        if (
+            # Alumni.query.filter_by(username=username).first() is not None or
+            Admin.query.filter_by(username=username).first() is not None or
+            Company.query.filter_by(username=username).first() is not None or
+
+            Company.query.filter_by(email=email).first() is not None or
+            Admin.query.filter_by(email=email).first() is not None
+            # Alumni.query.filter_by(email=email).first() is not None
+            
+        ):
+            return None  # Return None to indicate duplicates
+
         newAlumni= Alumni(username, password, email, alumni_id)
         try: # safetey measure for trying to add duplicate 
             db.session.add(newAlumni)

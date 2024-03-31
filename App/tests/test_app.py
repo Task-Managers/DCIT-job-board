@@ -3,12 +3,13 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from App.main import create_app
 from App.database import db, create_db
-from App.models import User, Admin
+from App.models import User, Admin, Alumni, Company, Listing
 from App.controllers import (
     create_user,
     get_all_users_json,
     login,
     jwt_authenticate_admin,
+    jwt_authenticate,
     get_user,
     get_user_by_username,
     update_user,
@@ -23,9 +24,21 @@ LOGGER = logging.getLogger(__name__)
 '''
 class UserUnitTests(unittest.TestCase):
 
-    def test_new_user(self):
-        user = User("bob", "bobpass", 'bob@mail')
-        assert user.username == "bob"
+    # def test_new_user(self):
+    #     user = User("bob", "bobpass", 'bob@mail')
+    #     assert user.username == "bob"
+
+    def test_new_admin(self):
+        admin = Admin('bob', 'bobpass', 'bob@mail')
+        assert admin.username == "bob"
+
+    def test_new_alumni(self):
+        alumni = Alumni('rob', 'robpass', 'rob@mail', '123456789')
+        assert alumni.username == 'rob'
+    
+    def test_new_company(self):
+        company = Company('rep.name', 'company1', 'compass', 'company@mail')
+        assert company.company_name == 'company1'
 
     # pure function no side effects or integrations called
     def test_get_json(self):
@@ -58,11 +71,12 @@ def empty_db():
     db.drop_all()
 
 
-# def test_authenticate():
-#     user = add_admin("bob", "bobpass", 'bob@mail')
-#     # assert login("bob", "bobpass") != None
-#     token = jwt_authenticate_admin('bob', "bobpass")
-#     assert token is not None
+def test_authenticate():
+    user = add_admin("bob", "bobpass", 'bob@mail')
+    assert login("bob", "bobpass") != None
+    token = jwt_authenticate_admin('bob', "bobpass")
+    # token = jwt_authenticate('1', 'bobpass')
+    assert token is not None
 
 class UsersIntegrationTests(unittest.TestCase):
 

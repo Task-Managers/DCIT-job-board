@@ -8,7 +8,9 @@ from App.controllers import ( create_user, get_all_users_json, get_all_users, ge
      add_admin, add_alumni, add_company, add_listing, add_categories,
      get_all_companies, get_all_companies_json,
      get_all_alumni, get_all_alumni_json, get_all_listings, get_all_listings_json, get_company_listings, get_all_subscribed_alumni,
-     subscribe_action, is_alumni_subscribed, send_notification, apply_listing, get_all_applicants)
+     subscribe_action, is_alumni_subscribed, send_notification, apply_listing, get_all_applicants,
+     get_user_by_username, get_user,
+     login)
 
 # This commands file allow you to create convenient CLI commands for testing controllers
 # test to see where this gets pushed to
@@ -19,11 +21,8 @@ from App.controllers import ( create_user, get_all_users_json, get_all_users, ge
 # ADD IN METHOD TO ADD CATEGORIES FOR A LISTING
 # ADD IN METHODS TO DELETE/EDIT MODELS, ESPECIALLY THE CATEGORIES IN LISTING AND ALUMNI
 
-# FIGURE OUT HOW TO APPLY WITH ALUMNI 
-# - alumni should apply to listings
-# - each alumni could apply to many listings and each listing can have many applicants
-
-# OR, AN APPLICATION MODEL NEEDS TO BE MADE WITH THE LISTING_ID AND USER_ID
+# fix login - need to get the user and type of user properly
+# fix... user class inheritance??
 
 app = create_app()
 migrate = get_migrate(app)
@@ -59,11 +58,12 @@ def initialize():
     # print(get_all_listings_json())
     print(get_company_listings('company2'))
     
-    # print all user
-    # print(get_all_users())
 
     # print(get_all_subscribed_alumni())
     # send_notification(['Programming'])
+    # create_user('username', 'password', 'email')
+    # print(get_user_by_username('bob'))
+    # print(get_user(1))
     print('database intialized')
 
 '''
@@ -196,7 +196,7 @@ def apply_listing_command(alumni_id, listing_title):
     alumni = apply_listing(alumni_id, listing_title)
 
     if alumni is None:
-        print(f'Error aapplying to listing {listing_title}')
+        print(f'Error applying to listing {listing_title}')
     else:
         print(f'{alumni} applied to listing {listing_title}')
 
