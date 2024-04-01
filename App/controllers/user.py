@@ -10,7 +10,20 @@ def create_user(username, password, email):
     return newuser
 
 def get_user_by_username(username):
-    return User.query.filter_by(username=username).first()
+    # return User.query.filter_by(username=username).first()
+    user = None
+#   user = User.query.filter_by(username=data['username']).first()
+    alumni = Alumni.query.filter_by(username=username).first()
+    if alumni:
+        user = alumni
+    admin = Admin.query.filter_by(username=username).first()
+    if admin:
+        user = admin
+    company = Company.query.filter_by(username=username).first()
+    if company:
+        user = company
+    
+    return user
 
 # def get_user_by_username(username):
 #     # Define the polymorphic loading to include all subclasses of User

@@ -7,7 +7,8 @@ from.index import index_views
 from App.controllers import (
     create_user,
     jwt_authenticate,
-    login 
+    login,
+    get_user_by_username 
 )
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
@@ -23,19 +24,26 @@ def get_user_page():
 
 
 @auth_views.route('/identify', methods=['GET'])
-@login_required
+# @login_required
+@jwt_required()
 def identify_page():
-    return jsonify({'message': f"username: {current_user.username}, id : {current_user.id}"})
-
-
-@auth_views.route('/login', methods=['POST'])
-def login_action():
-    data = request.form
-    user = login(data['username'], data['password'])
+    # return jsonify({'message': f"username: {current_user.username}, id : {current_user.id}"})
+    username = get_jwt_identity()
+    # user = User.query.filter_by(username=username).first()
+    user = get_user_by_username(username)
     if user:
-        login_user(user)
-        return 'user logged in!'
-    return 'bad username or password given', 401
+        return jsonify(user.get_json())
+    return jsonify(message='Invalid user'), 403
+
+
+# @auth_views.route('/login', methods=['POST'])
+# def login_action():
+#     data = request.form
+#     user = login(data['username'], data['password'])
+#     if user:
+#         login_user(user)
+#         return 'user logged in!'
+#     return 'bad username or password given', 401
 
 @auth_views.route('/logout', methods=['GET'])
 def logout_action():

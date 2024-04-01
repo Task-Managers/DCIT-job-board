@@ -1,5 +1,7 @@
 from flask_login import login_user, login_manager, logout_user, LoginManager
-from flask_jwt_extended import create_access_token, jwt_required, JWTManager
+from flask_jwt_extended import create_access_token, jwt_required, JWTManager, set_access_cookies
+
+from flask import jsonify
 
 from App.models import User, Admin, Alumni, Company, Listing
 
@@ -29,17 +31,27 @@ def login(username, password):
     # user = User.query.filter_by(username=username).first()
     # if user and user.check_password(password):
     #     return user
+
+    user = None
     admin = Admin.query.filter_by(username=username).first()
     if admin and admin.check_password(password):
-        return admin
+        # return admin
+        user = admin
 
     alumni = Alumni.query.filter_by(username=username).first()
     if alumni and alumni.check_password(password):
-        return alumni
+        # return alumni
+        user = alumni
 
     company = Company.query.filter_by(username=username).first()
     if company and company.check_password(password):
-        return company
+        # return company
+        user = company
+    if user is not None:
+      token = create_access_token(identity=username)
+      response = jsonify(access_token=token)
+      set_access_cookies(response, token)
+      return user
     return None
     # return None
 
