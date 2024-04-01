@@ -10,7 +10,7 @@ from App.controllers import ( create_user, get_all_users_json, get_all_users, ge
      get_all_alumni, get_all_alumni_json, get_all_listings, get_all_listings_json, get_company_listings, get_all_subscribed_alumni,
      subscribe_action, is_alumni_subscribed, send_notification, apply_listing, get_all_applicants,
      get_user_by_username, get_user,
-     login)
+     login, jwt_authenticate)
 
 # This commands file allow you to create convenient CLI commands for testing controllers
 # test to see where this gets pushed to
@@ -21,8 +21,9 @@ from App.controllers import ( create_user, get_all_users_json, get_all_users, ge
 # ADD IN METHOD TO ADD CATEGORIES FOR A LISTING
 # ADD IN METHODS TO DELETE/EDIT MODELS, ESPECIALLY THE CATEGORIES IN LISTING AND ALUMNI
 
-# fix login - need to get the user and type of user properly
-# fix... user class inheritance??
+# fix login authentication
+# try to fix /identify route in auth.py views first
+# then try to fix /app route problem
 
 app = create_app()
 migrate = get_migrate(app)
@@ -63,7 +64,7 @@ def initialize():
     # send_notification(['Programming'])
     # create_user('username', 'password', 'email')
     # print(get_user_by_username('bob'))
-    # print(get_user(1))
+    print(jwt_authenticate('bob', 'bobpass'))
     print('database intialized')
 
 '''

@@ -9,11 +9,45 @@ from App.controllers import (
     jwt_authenticate, 
     # jwt_authenticate_admin,
     get_all_users,
+
+    get_user_by_username,
+
     get_all_users_json,
-    jwt_required
+    jwt_required,
+    login
 )
 
+from App.controllers.alumni import *
+
 user_views = Blueprint('user_views', __name__, template_folder='../templates')
+
+@user_views.route('/login', methods=['POST'])
+def login_action():
+
+    data = request.form
+#     user = None
+# #   user = User.query.filter_by(username=data['username']).first()
+#     alumni = Alumni.query.filter_by(username=data['username']).first()
+#     if alumni:
+#         user = alumni
+#     admin = Admin.query.filter_by(username=data['username']).first()
+#     if admin:
+#         user = admin
+#     company = Company.query.filter_by(username=data['username']).first()
+#     if company:
+#         user = company
+    user = get_user_by_username(data['username'])
+    
+    if user and user.check_password(data['password']):  # check credentials
+        flash('Logged in successfully.')  # send message to next page
+        # login_user(user)  # login the user
+        login(user.username, user.password)
+        # return redirect('/app')  # redirect to main page if login successful
+        # return render_template('homepage.html')
+        return(user.get_json())
+    else:
+        flash('Invalid username or password')  # send message to next page
+    return redirect('/')
 
 @user_views.route('/users', methods=['GET'])
 def get_user_page():
