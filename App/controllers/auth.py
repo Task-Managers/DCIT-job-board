@@ -5,6 +5,8 @@ from flask import jsonify
 
 from App.models import User, Admin, Alumni, Company, Listing
 
+from App.controllers import get_user_by_username
+
 def jwt_authenticate(username, password):
 
   admin = Admin.query.filter_by(username=username).first()
@@ -28,32 +30,15 @@ def jwt_authenticate_admin(username, password):
   return None
 
 def login(username, password):
-    # user = User.query.filter_by(username=username).first()
-    # if user and user.check_password(password):
-    #     return user
-
-    user = None
-    admin = Admin.query.filter_by(username=username).first()
-    if admin and admin.check_password(password):
-        # return admin
-        user = admin
-
-    alumni = Alumni.query.filter_by(username=username).first()
-    if alumni and alumni.check_password(password):
-        # return alumni
-        user = alumni
-
-    company = Company.query.filter_by(username=username).first()
-    if company and company.check_password(password):
-        # return company
-        user = company
-    if user is not None:
+    user = get_user_by_username(username)
+    if user and user.check_password(password):
+    # if user is not None:
       token = create_access_token(identity=username)
       response = jsonify(access_token=token)
       set_access_cookies(response, token)
-      return user
+      return response
+    # return jsonify(message="Invalid username or password"), 401
     return None
-    # return None
 
 # def login(username, password):
 #     # user = User.query.filter_by(username=username).first()
@@ -67,17 +52,19 @@ def setup_flask_login(app):
     login_manager.init_app(app)
     
     @login_manager.user_loader
-    def load_user(user_id):
+    # def load_user(user_id):
+    def load_user(username):
         # return User.query.get(user_id)
-        admin = Admin.query.get(user_id)
+        # admin = Admin.query.get(username)
+        admin = Admin.query.filter_by(username=username).first()
         if admin:
           return admin
         
-        alumni = Alumni.query.get(user_id)
+        alumni = Alumni.query.get(username)
         if alumni:
           return alumni
 
-        company = Company.query.get(user_id)
+        company = Company.query.get(username)
         if company:
           return company
     
@@ -94,15 +81,17 @@ def setup_jwt(app):
         # return None
         admin = Admin.query.filter_by(username=identity).one_or_none()
         if admin:
-          return admin.id
+          return admin.username
 
         alumni = Alumni.query.filter_by(username=identity).one_or_none()
         if alumni:
-          return alumni.id
+          return alumni.username
 
         company = Company.query.filter_by(username=identity).one_or_none()
         if company:
-          return company.id
+          return company.username
+
+        return None
 
     @jwt.user_lookup_loader
     def user_lookup_callback(_jwt_header, jwt_data):
@@ -120,5 +109,43 @@ def setup_jwt(app):
         company = Company.query.filter_by(username=identity).one_or_none()
         if company:
           return company
-
     return jwt
+
+# def login_required(required_class):
+#   def wrapper(f):
+#       @wraps(f)
+#       @jwt_required()  # Ensure JWT authentication
+#       def decorated_function(*args, **kwargs):
+#         user = required_class.query.filter_by(username=get_jwt_identity()).first()  
+#         print(user.__class__, required_class, user.__class__ == required_class)
+#         if user.__class__ != required_class:  # Check class equality
+#             return jsonify(message='Invalid user role'), 403
+#         return f(*args, **kwargs)
+#       return decorated_function
+#   return wrapper
+
+def alumni_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not current_user.is_authenticated or not isinstance(current_user, Alumni):
+            return "Unauthorized", 401
+        return func(*args, **kwargs)
+    return wrapper
+
+
+def Company_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not current_user.is_authenticated or not isinstance(current_user, Company):
+            return "Unauthorized", 401
+        return func(*args, **kwargs)
+    return wrapper
+
+
+def admin_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not current_user.is_authenticated or not isinstance(current_user, Admin):
+            return "Unauthorized", 401
+        return func(*args, **kwargs)
+    return wrapper

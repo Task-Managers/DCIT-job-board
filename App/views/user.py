@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, jsonify, request, send_from_directory, flash, redirect, url_for
-from flask_jwt_extended import jwt_required, current_user as jwt_current_user
+from flask_jwt_extended import jwt_required, get_jwt_identity, current_user as jwt_current_user
 from flask_login import current_user, login_required
 
 from.index import index_views
@@ -36,18 +36,35 @@ def login_action():
 #     company = Company.query.filter_by(username=data['username']).first()
 #     if company:
 #         user = company
-    user = get_user_by_username(data['username'])
+
+    # user = get_user_by_username(data['username'])
     
-    if user and user.check_password(data['password']):  # check credentials
-        flash('Logged in successfully.')  # send message to next page
-        # login_user(user)  # login the user
-        login(user.username, user.password)
-        # return redirect('/app')  # redirect to main page if login successful
-        # return render_template('homepage.html')
-        return(user.get_json())
+    response = login(data['username'], data['password'])
+
+    if response:
+        flash('Logged in successfully!')
+        # return redirect('/app')
+        return(current_user)
     else:
-        flash('Invalid username or password')  # send message to next page
-    return redirect('/')
+        flash('Invalid username or password')
+        return redirect('/')
+    
+    # if user and user.check_password(data['password']):  # check credentials
+    #     flash('Logged in successfully.')  # send message to next page
+
+    #     # token = create_access_token(identity=username)
+    #     # response = jsonify(access_token=token)
+    #     # set_access_cookies(response, token)
+
+    #     # login(user.username, user.password)
+    #     # return redirect('/app')  # redirect to main page if login successful
+    #     # return render_template('homepage.html')
+
+    #     return(user.get_json())
+    #     # return(current_user)
+    # else:
+    #     flash('Invalid username or password')  # send message to next page
+    # return redirect('/')
 
 @user_views.route('/users', methods=['GET'])
 def get_user_page():
@@ -56,8 +73,10 @@ def get_user_page():
 
 @user_views.route('/api/users', methods=['GET'])
 def get_users_action():
+    # users = get_all_users_json()
     users = get_all_users_json()
     return jsonify(users)
+    # return users[0]['username']
 
 @user_views.route('/api/users', methods=['POST'])
 def create_user_endpoint():

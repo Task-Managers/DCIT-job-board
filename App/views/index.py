@@ -6,6 +6,10 @@ from App.models import db
 # from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_jwt_extended import jwt_required, current_user as jwt_current_user
 
+from App.controllers import(
+    add_admin,
+)
+
 index_views = Blueprint('index_views', __name__, template_folder='../templates')
 
 @index_views.route('/', methods=['GET'])
@@ -17,6 +21,9 @@ def init():
     db.drop_all()
     db.create_all()
     # create_user('bob', 'bobpass')
+    add_admin('bob', 'bobpass', 'bob@mail')
+    add_admin('bob2', 'bobpass', 'bob2@mail')
+
     return jsonify(message='db initialized!')
 
 @index_views.route('/app', methods=['GET'])
