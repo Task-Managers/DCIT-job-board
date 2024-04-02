@@ -3,21 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <title>DCIT Job Board</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: gainsboro;
         }
         header {
-            background-color: #333;
+            background-color: rgb(57, 97, 185);
             color: #fff;
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+
+        .logout{
+            background-color: rgb(57, 97, 185);
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .logout:hover{
+            background-color: rgb(98, 127, 191);
+        }
+
+        .subpopup-content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .subscription h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subscription p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .subscription form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .subscription input[type="email"], .subscription select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #subscribe-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        #subscribe-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .email-input, .category-input, .subscribe-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .fa-envelope, .fa-list, .fa-bell {
+            color: #007bff;
+        }
+
+
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -99,6 +176,36 @@
             justify-content: space-between;
             align-items: center;
         }
+        .popup-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
+
+        .subpopup-content {
+            background-color: #fff;
+            width: 450px;
+            padding: 20px;
+            border-radius: 10px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        
         .popup {
             display: none;
             position: fixed;
@@ -120,6 +227,15 @@
             overflow: auto;
             position: relative;
         }
+        .popup-form{
+            position: fixed;
+            top: 0;
+            margin-left: 10px;
+            width: 50%;
+            height: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
         .close-btn {
             color: black;
             border: none;
@@ -138,54 +254,109 @@
 <body>
     <header>
         <h1>DCIT Job Board</h1>
-        {% if user_is_logged_in %}
-            <button class="logout">Logout</button>
-        {% endif %}
+        <button class="logout">Logout</button>
     </header>
     <div class="container">
-        <div class="search">
-            <input type="search" placeholder="Search any job here">
-            <select class="categories" id="category">
-                <option>--select an option--</option>
-                {% for category in job_categories %}
-                    <option>{{ category }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        {% for job in jobs %}
-            <div class="job_card" id="jobCard">
-                <div class="job_details">
-                    <div class="text">
-                        <h2>{{ job.title }}</h2>
-                        <span>{{ job.company }} - {{ job.type }}</span>
+        <div id="subpopup" class="popup-container">
+            <div class="subpopup-content">
+                <h2>Wecome Alumni</h2>
+ 
+                <p>Welcome to the DCIT Job Board! Explore our curated job listings directly below. 
+                Whether you're a recent graduate or seasoned professional, find your perfect opportunity here. 
+                Stay updated by subscribing to our mailing list for the latest job postings. Start your journey to career success today!</p>
+                    
+
+                <section class="subscription">
+                    <div class="box">
+                        <h2>Subscribe to Job Alerts</h2>
+                        <p>Get notified about new job opportunities.</p>
+                        <form method="post">
+                            <div class="email-input">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" name="email" id="email" placeholder="Enter your email here" required>
+                            </div>
+                            <div class="category-input">
+                                <i class="fas fa-list"></i>
+                                <select name="category" id="category" required>
+                                    <option value="">Select Category</option>
+                                    <option value="SE">Software Engineer</option>
+                                    <option value="DBM">Database Manager</option>
+                                    <option value="CS">Cyber Security</option>
+                                </select>
+                            </div>
+                            <div class="subscribe-btn">
+                                <i class="fas fa-bell"></i>
+                                <button id="subscribe-btn" type="submit">Subscribe</button>
+                            </div>
+                        </form>
                     </div>
-                </div>
-                <div class="job_salary">
-                    <h4>{{ job.salary | default('Undisclosed', true) }}</h4>
-                    <span>{{ job.time_ago }} days ago</span>
+                </section>                     
+                <span class="close" id="subclose-btn">&times;</span>
+            </div>
+        </div>
+
+        <div class="search">
+            <!-- Search form -->
+            <form action="{{ url_for('search') }}" method="GET">
+                <input type="search" id="searchInput" name="search" placeholder="Search any job here">
+                <select class="categories" id="category" name="category">
+                    <option value="">--select and option--</option>
+                    <option>Web Design</option>
+                    <option>Web Development</option>
+                    <option>Database Manager</option>
+                </select>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <!-- Job listings -->
+        {% for job in jobs %}
+        <div class="job_card" id="jobCard{{ loop.index }}">
+            <div class="job_details">
+                <div class="text">
+                    <h2>{{ job.title }}</h2>
+                    <span>{{ job.company }} - {{ job.type }}</span>
                 </div>
             </div>
-        {% else %}
-            <p>No jobs found.</p>
+            <div class="job_salary">
+                <h4>{{ job.salary }}</h4>
+                <span>{{ job.date }}</span>
+            </div>
+        </div>
         {% endfor %}
-        <div class="popup" id="popup">
+
+          <div class="popup" id="popup">
             <div class="popup-content">
-                <button class="close-btn" id="closeBtn">x</button>
-                <h3>{{ selected_job.company_name }}</h3>
-                <h4>{{ selected_job.position_title }}</h4>
-                <p>Description: {{ selected_job.description }}</p>
-                <p>Position Type: {{ selected_job.position_type }}</p>
-                <p>Remote: {{ 'Yes' if selected_job.is_remote else 'No' }}</p>
-                <p>Employment Term: {{ selected_job.employment_term }}</p>
-                <p>Must Be a TT National: {{ 'Yes' if selected_job.must_be_tt_national else 'No' }}</p>
-                <p>Category: {{ selected_job.category }}</p>
-                <p>Desired Candidate Type: {{ selected_job.candidate_type }}</p>
-                <h2>Interested? Send your resume <a href="#" id="applyBtn">now!</a></h2>
-                <div class="form hidden" id="app-form">
+            <button class="close-btn" id="closeBtn">x</button>
+            <h3>{{ job.company }}</h3>
+            <h4>{{ job.position }}</h4>
+            <p>Description: {{ job.description }}</p>
+            <p>Position Type: {{ job.type }}</p>
+            <p>Remote: {{ job.remote }}</p>
+            <p>Employment Term: {{ job.term }}</p>
+            <p>Must Be a TT National: {{ job.national }}</p>
+            <p>Category: {{ job.category }}</p>
+            <p>Desired Candidate Type: {{ job.candidate_type }}</p>
+
+            <h2>Interested? Send your resume <a href="#" id="applyBtn">now!</a></h2>
+            
+            <!-- Form popup content -->
+            <div class="popup-form" id="form-popup">
+                <div class="popup-content">
+                    <button class="close-btn" id="closeFormBtn">x</button>
                     <form action="#" method="POST">
                         <div class="form-group">
                             <label for="full_name">Full Name:</label>
                             <input type="text" id="full_name" name="full_name" required>
+                        </div>
+                        <div class="form-group" id="form-dropdown">
+                            <label for="experience">Experience:</label>
+                            <select id="experience" name="experience" required>
+                                <option value="">Select Experience</option>
+                                <option value="entry">Entry Level</option>
+                                <option value="mid">Mid Level</option>
+                                <option value="senior">Senior Level</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="email">Email:</label>
@@ -211,30 +382,83 @@
             </div>
         </div>
     </div>
+    </div>
     <script>
-        const jobCard = document.getElementById('jobCard');
-        const popup = document.getElementById('popup');
-        const closeBtn = document.getElementById('closeBtn');
-        const applyBtn = document.getElementById('applyBtn');
-        const popupContent = document.querySelector('.popup-content'); // Adjusted this
-        const applicationForm = document.getElementById('app-form');
-    
-        jobCard.addEventListener('click', function() {
-            popup.style.display = 'block';
-            popupContent.classList.remove('hidden'); // Ensure content is shown if previously hidden
-            applicationForm.classList.add('hidden'); // Hide form initially
+    const jobCard = document.getElementById('jobCard');
+    const popup = document.getElementById('popup');
+    const closeBtn = document.getElementById('closeBtn');
+    const formPopup = document.getElementById('form-popup');
+    const openFormBtn = document.getElementById('applyBtn');
+    const closeFormBtn = document.getElementById('closeFormBtn');
+
+    jobCard.addEventListener('click', function() {
+        popup.style.display = 'block';
+        formPopup.style.display = 'none'; 
+    });
+
+    closeBtn.addEventListener('click', function() {
+        popup.style.display = 'none';
+    });
+
+    openFormBtn.addEventListener('click', function(event) {
+        event.preventDefault();
+        formPopup.style.display = 'block'; 
+    });
+
+    closeFormBtn.addEventListener('click', function() {
+        formPopup.style.display = 'none'; 
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const jobCards = document.querySelectorAll('.job_card');
+        const searchInput = document.getElementById('searchInput');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            filterJobs(searchTerm);
         });
-    
-        closeBtn.addEventListener('click', function() {
-            popup.style.display = 'none';
+
+        function filterJobs(searchTerm) {
+            jobCards.forEach(function(jobCard) {
+                const jobTitle = jobCard.querySelector('.job_details h2').textContent.toLowerCase();
+                if (jobTitle.includes(searchTerm)) {
+                    jobCard.style.display = 'block';
+                } else {
+                    jobCard.style.display = 'none';
+                }
+            });
+        }
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const subpopup = document.getElementById("subpopup");
+        const closeButton = document.getElementById("subclose-btn");
+        const subscribeButton = document.getElementById("subscribe-btn");
+
+        function showPopup() {
+            subpopup.style.display = "block";
+        }
+
+        closeButton.addEventListener("click", function() {
+            subpopup.style.display = "none";
         });
-    
-        applyBtn.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent the default anchor action
-            applicationForm.classList.remove('hidden'); // Show the form
-            popupContent.style.display = 'none'; // Hide the popup content
+
+        window.addEventListener("click", function(event) {
+            if (event.target == subpopup) {
+                subpopup.style.display = "none";
+            }
         });
-    </script>
+
+        subscribeButton.addEventListener("click", function() {
+            const emailInput = document.getElementById("email").value;
+            console.log("Subscribing email:", emailInput);
+            subpopup.style.display = "none";
+        });
+
+        showPopup();
+    });
+</script>
+
 </body>
 </html>
-
