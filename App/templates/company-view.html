@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Listings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        button, a {
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        button:hover, a:hover {
+            background-color: #555;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .job-listing {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            position: relative;
+        }
+        .job-actions {
+            position: absolute;
+            bottom: 10px; 
+            right: 10px;
+        }
+        .add-job-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .add-job-button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<header>
+    <h2>Job Listings</h2>
+    <button class="add-job-button"><a href="{{ url_for('company_form') }}"> Add Job</a></button>
+</header>
+<body>
+    <div class="container">
+        {% for job in jobs %}
+        <div class="job-listing">
+            <h3>{{ job.company }}</h3>
+            <h4>{{ job.position }}</h4>
+            <p>Description: {{ job.description }}</p>
+            <p>Position Type: {{ job.type }}</p>
+            <p>Remote: {{ job.remote }}</p>
+            <p>Employment Term: {{ job.employment_term }}</p>
+            <p>Must Be a TT National: {{ job.tt_national }}</p>
+            <p>Category: {{ job.category }}</p>
+            <p>Desired Candidate Type: {{ job.candidate_type }}</p>
+            <div class="job-actions">
+                <button class= "viewapp"><a href="{{ url_for('view_applicants_company') }}">View Applicants</a></button>
+                <button>Request Edits</button>
+                <button class="request-deletion-btn" onclick="confirmDeletion(this)">Request Deletion</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+<script>
+function confirmDeletion(button) {
+    var confirmation = confirm("Are you sure you want to request deletion?");
+    if (confirmation) {
+        button.innerText = "Request for Deletion Submitted";
+        if (!button.hasAttribute('data-cancel-added')) {
+            var cancelButton = document.createElement("button");
+            cancelButton.innerText = "Cancel";
+            cancelButton.onclick = function() {
+                cancelDeletion(button);
+            };
+            button.parentNode.appendChild(cancelButton);
+            button.setAttribute('data-cancel-added', 'true');
+        }
+    }
+}
+
+function cancelDeletion(button) {
+    button.innerText = "Request Deletion";
+    button.parentNode.removeChild(button.nextSibling);
+    button.removeAttribute('data-cancel-added');
+}
+</script>
+</body>
+</html>

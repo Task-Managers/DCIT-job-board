@@ -63,8 +63,8 @@ def initialize():
     # print(get_all_subscribed_alumni())
     # send_notification(['Programming'])
     # create_user('username', 'password', 'email')
-    # print(get_user_by_username('bob'))
-    print(jwt_authenticate('bob', 'bobpass'))
+    # print(get_user_by_username('rob'))
+    # print(jwt_authenticate('bob', 'bobpass'))
     print('database intialized')
 
 '''

@@ -12,6 +12,11 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String, nullable=False, unique = True)
 
+#     __mapper_args__ = {
+#       'polymorphic_identity': 'user',
+#       'polymorphic_on': type
+#   }
+
     def __init__(self, username, password, email):
         self.username = username
         self.set_password(password)
