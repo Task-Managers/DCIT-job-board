@@ -4,7 +4,7 @@ from App.models import db
 
 # from flask_jwt_extended import current_user 
 # from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask_jwt_extended import jwt_required, current_user as jwt_current_user
+from flask_jwt_extended import jwt_required, get_jwt_identity, current_user as jwt_current_user
 
 from App.controllers import(
     add_admin,
@@ -12,9 +12,9 @@ from App.controllers import(
 
 index_views = Blueprint('index_views', __name__, template_folder='../templates')
 
-@index_views.route('/', methods=['GET'])
-def index_page():
-    return render_template('homepage.html')
+# @index_views.route('/', methods=['GET'])
+# def index_page():
+#     return render_template('homepage.html')
 
 @index_views.route('/init', methods=['GET'])
 def init():
@@ -29,10 +29,10 @@ def init():
 @index_views.route('/app', methods=['GET'])
 # @index_views.route('/app/<int:category>', methods=['GET'])
 #need to set up login things
-@jwt_required
+@jwt_required()
 def index_page():
     # user = current_user
-    user = get_jwt_identiy()
+    user = get_jwt_identity()
     # url = 'https://wger.de/api/v2/exercisecategory/?format=json'
 
     # response = requests.get(url)
