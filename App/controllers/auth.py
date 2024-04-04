@@ -40,6 +40,18 @@ def login(username, password):
     # return jsonify(message="Invalid username or password"), 401
     return None
 
+def login_user(username, password):
+  # user = User.query.filter_by(username=username).first()
+  user = get_user_by_username(username)
+  if user and user.check_password(password):
+    token = create_access_token(identity=username)
+    return token
+  return None
+
+def logout(username, password):
+
+  return None
+
 # def login(username, password):
 #     # user = User.query.filter_by(username=username).first()
 #     User.query.filter_by(username=username).first()
@@ -60,11 +72,13 @@ def setup_flask_login(app):
         if admin:
           return admin
         
-        alumni = Alumni.query.get(username)
+        # alumni = Alumni.query.get(username)
+        alumni = Alumni.query.filter_by(username=username).first()
         if alumni:
           return alumni
 
-        company = Company.query.get(username)
+        # company = Company.query.get(username)
+        company = Company.query.filter_by(username=username).first()
         if company:
           return company
     

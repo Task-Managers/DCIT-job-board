@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, jsonify, request, send_from_directory, flash, redirect, url_for
-from flask_jwt_extended import jwt_required, get_jwt_identity, current_user as jwt_current_user
+from flask_jwt_extended import jwt_required, get_jwt_identity, unset_jwt_cookies, current_user as jwt_current_user
 from flask_login import login_required, login_user, current_user, logout_user
 
 from.index import index_views
@@ -80,12 +80,16 @@ def user_login_api():
     # return jsonify(access_token=token)
     return response
 
+@auth_views.route('/api/logout', methods=['GET'])
+def logout():
+  response = jsonify(message='Logged out')
+  unset_jwt_cookies(response)
+  return response
+
 @auth_views.route('/api/identify', methods=['GET'])
 @jwt_required()
 # @login_required
 def identify_user_action():
-    # user = jwt_current_user
-    # return jsonify({'message': f"username: {user.username}, id : {user.id}"})
     user = get_jwt_identity()
     return user
     # return jsonify({'message':f"hi"})
