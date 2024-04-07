@@ -4,17 +4,22 @@ from App.models import db
 
 # from flask_jwt_extended import current_user 
 # from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask_jwt_extended import jwt_required, current_user as jwt_current_user
+from flask_jwt_extended import jwt_required, get_jwt_identity, current_user as jwt_current_user
 
 from App.controllers import(
     add_admin,
+    get_user_by_username
+)
+
+from App.models import(
+    Alumni
 )
 
 index_views = Blueprint('index_views', __name__, template_folder='../templates')
 
-@index_views.route('/', methods=['GET'])
-def index_page():
-    return render_template('homepage.html')
+# @index_views.route('/', methods=['GET'])
+# def index_page():
+#     return render_template('homepage.html')
 
 @index_views.route('/init', methods=['GET'])
 def init():
@@ -28,11 +33,15 @@ def init():
 
 @index_views.route('/app', methods=['GET'])
 # @index_views.route('/app/<int:category>', methods=['GET'])
-#need to set up login things
-@jwt_required
+@jwt_required()
 def index_page():
-    # user = current_user
-    user = get_jwt_identiy()
+    username = get_jwt_identity()
+    user = get_user_by_username(username)
+
+    # need to do:
+    # - return a list of categories to render in
+    # - return a list of listings - flesh out listing model 
+    
     # url = 'https://wger.de/api/v2/exercisecategory/?format=json'
 
     # response = requests.get(url)
@@ -45,10 +54,12 @@ def index_page():
     #     exercises_list = Exercise.query.filter_by(category=category)
 
     #     exerciseSets = ExerciseSet.query.filter_by(user_id = current_user.id)
-    return jsonify({'message': 'Welcome to the app route!', 'user': user}), 200
+    # return jsonify({'message': 'Welcome to the app route!', 'user': user}), 200
     if isinstance(user, Alumni):
 
         return render_template('alumni.html')
+
+    return redirect('/login')
 
     # return render_template('homepage.html')
     # return render_template('index.html', categories = categories, exercises_list = exercises_list, exerciseSets = exerciseSets, user=user)

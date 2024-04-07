@@ -96,6 +96,27 @@ class UsersIntegrationTests(unittest.TestCase):
         company = add_company('rep.name', 'company1', 'compass', 'company@mail')
         assert company.username == 'rep.name' and company.company_name == 'company1'
 
+    # def test_add_listing(self):
+
+        # add a listing, make sure a company was created first above or else itll throw an error
+        # tests run alphabetically for some reason so keep that in mind
+        # then just assert the values
+
+    # def test_alumni_subscribe(self):
+
+        # subscribe an already created alumni and assert is_subscribed
+
+    # def test_add_categories(self):
+
+        # add categories to an already existing alumni and assert the categories match
+
+    # def test_apply_listing(self):
+
+        # apply an already existing alumni to an already existing Listing
+        # assert listing applicants
+
+    
+
     def test_get_all_users_json(self):
         users_json = get_all_users_json()
         self.assertListEqual([

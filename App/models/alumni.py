@@ -20,6 +20,9 @@ class Alumni(User):
     # relationship to listings to receive notifications?
     subscribed = db.Column(db.Boolean, default=False)
 
+    # need to add in columns for:
+    # -contact info i.e phone number
+
     
 
     # categories = ['Software Engineering', 'Database', 'Programming', 'N/A']
