@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, jsonify, request, send_from_directory, flash, redirect, url_for
-from flask_jwt_extended import jwt_required, get_jwt_identity, set_access_cookies, current_user as jwt_current_user
+from flask import Blueprint, render_template, jsonify, request, send_from_directory, flash, redirect, url_for, make_response
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, set_access_cookies, current_user as jwt_current_user
 from flask_login import current_user, login_required
 
 from.index import index_views
@@ -24,30 +24,30 @@ user_views = Blueprint('user_views', __name__, template_folder='../templates')
 
 @user_views.route('/', methods=['GET'])
 @user_views.route('/login', methods=['GET'])
-# @jwt_required()
 def login_page():
-#   if current_user.is_authenticated:
-#     return redirect('/app')
   return render_template('homepage.html')
 
 @user_views.route('/login', methods=['POST'])
 def login_action():
   data = request.form
   token = login_user(data['username'], data['password'])
-
+  
   print(token)
-  print('testttttttt')
-
   response = None
+  
   if token:
     flash('Logged in successfully.')  # send message to next page
-    response = redirect(url_for('auth_views.identify_page'))
-    # response = redirect('/')
+    response = redirect(url_for('index_views.index_page'))
     set_access_cookies(response, token)
   else:
     flash('Invalid username or password')  # send message to next page
     response = redirect('/')
+  print('response headers: ', response.headers)
   return response
+
+
+
+
 
 # @user_views.route('/login', methods=['POST'])
 # def login_action():

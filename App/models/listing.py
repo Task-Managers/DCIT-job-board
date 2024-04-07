@@ -3,7 +3,9 @@ from .company import Company
 # from .alumni import Alumni
 
 # categories list for possible job categories
-categories = ['Software Engineering', 'Database', 'Programming', 'Web Design', 'Machine Learning', 'Big Data', 'Algorithms', 'N/A']
+categories = [
+    'Software Engineering', 'Database', 'Programming', 'Web Design', 'Machine Learning', 
+    'Big Data', 'Algorithms', 'N/A']
 
 # Association Table for Alumni and Listings (Many-to-Many)
 alumni_listings_association = db.Table(
@@ -16,21 +18,26 @@ class Listing(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(120), nullable = False, unique=True)
     description = db.Column(db.String(500))
-    # insert other information later:
-    # position type, options for remote, employment term, tt national, job areas, desired cand. type, level
-    # use enums/ predetermined types maybe for some
 
-    # categories = ['Software Engineering', 'Database', 'Programming', 'N/A']
     job_category = db.Column(db.String(120))
-    # job_category = db.Column(ARRAY(db.String(120)))
 
 
     # set up relationship with Company (M-1)
     company_name = db.Column(db.String(), db.ForeignKey('company.company_name'), nullable=False)
     companies = db.relationship('Company', back_populates='listings', overlaps="company")
 
-    # relationship with alumni
-    # each listing has applicants/alumni applied to it
+    # need to add in columns for:
+    # -salary - integer
+    # -date - 
+    # -position - string? - list from companyform.html
+    # -remote - boolean
+    # -employment term - string?
+    # -ttnational - boolean
+
+    # -desiredcandidate - string?
+    # job area?
+    
+    # - 
 
 
     # Define relationship to Alumni

@@ -21,9 +21,12 @@ from App.controllers import ( create_user, get_all_users_json, get_all_users, ge
 # ADD IN METHOD TO ADD CATEGORIES FOR A LISTING
 # ADD IN METHODS TO DELETE/EDIT MODELS, ESPECIALLY THE CATEGORIES IN LISTING AND ALUMNI
 
-# fix login authentication
-# try to fix /identify route in auth.py views first
-# then try to fix /app route problem
+# !!DO OUT VIEWS AND RENDERING!!
+# add in way to get applicants for a listing by company - so company can view list applicants
+# flesh out models - listings!!, alumni(contact info?)
+# integration tests
+# admin deletion and editing of company requests? might just cut to make simpler - if editing/deleting a listing have to make sure applicants dont get messed up either
+# mailchimp???
 
 app = create_app()
 migrate = get_migrate(app)

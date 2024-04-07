@@ -23,7 +23,7 @@ def load_config():
     config['SEVER_NAME'] = '0.0.0.0'
     config['PREFERRED_URL_SCHEME'] = 'https'
     config['UPLOADED_PHOTOS_DEST'] = "App/uploads"
-    config["JWT_TOKEN_LOCATION"] = ["headers"]
+    config["JWT_TOKEN_LOCATION"] = ["cookies", "headers"]
     return config
 
 config = load_config()
