@@ -41,7 +41,7 @@ def initialize():
     add_admin('bob', 'bobpass', 'bob@mail')
 
     # add in alumni
-    add_alumni('rob', 'robpass', 'rob@mail', '123456789', '1868-333-4444')
+    add_alumni('rob', 'rob lastname', 'robpass', 'rob@mail', '123456789', '1868-333-4444')
 
     # add_alumni('rooooob', 'robpass', 'roooooob@mail', '123456089')
 
@@ -58,8 +58,13 @@ def initialize():
     # add in listings
     # listing1 = add_listing('listing1', 'job description', 'company2')
     # print(listing1, 'test')
+    add_listing('listing1', 'job description1', 'company1',
+                8000, 'Part-time', True, 'employmentTerm!', True, 'desiredCandidate?', 'Curepe', ['Database', 'Programming', 'butt'])
+
     add_listing('listing2', 'job description', 'company2',
                 4000, 'Full-time', True, 'employmentTerm?', True, 'desiredCandidate?', 'Curepe', ['Database', 'Programming', 'butt'])
+
+    
 
 
     # print(get_all_listings_json())

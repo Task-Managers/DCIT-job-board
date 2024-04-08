@@ -312,7 +312,7 @@
 
         <!-- Job listings -->
         {% for job in jobs %}
-        <div class="job_card" id="jobCard{{ loop.index }}">
+        <div class="job_card" id="jobCard">
             <div class="job_details">
                 <div class="text">
                     <h2>{{ job.title }}</h2>
@@ -320,25 +320,22 @@
                 </div>
             </div>
             <div class="job_salary">
-                <h4>{{ job.salary }}</h4>
-                <!-- <span>{{ job.date }}</span> -->
+                <h4>Salary: {{ job.salary }}</h4>
+            </div>
+            <div class="text">
+                <h4>Description: {{ job.description }}</h4>
+                <h4>Position: {{job.position}} </h4>
+                <h4>Category: {{job.job_category}}</h4>
+                <h4>Remote: {{job.remote}} </h4>
+                <h4>Employment term: {{job.employmentterm}}</h4>
+                <h4>Must be T&T national: {{job.ttnational}} </h4>
             </div>
         </div>
         {% endfor %}
 
           <div class="popup" id="popup">
             <div class="popup-content">
-            <button class="close-btn" id="closeBtn">x</button>
-            <!-- <h3>{{ job.company_name }}</h3> -->
-            <h4>{{ job.position }}</h4>
-            <p>Description: {{ job.description }}</p>
-            <p>Position Type: {{ job.type }}</p>
-            <p>Remote: {{ job.remote }}</p>
-            <p>Employment Term: {{ job.term }}</p>
-            <p>Must Be a TT National: {{ job.national }}</p>
-            <p>Category: {{ job.category }}</p>
-            <p>Desired Candidate Type: {{ job.candidate_type }}</p>
-            <h3 id="popupCompanyName"></h3>
+            <!-- <h3 id="popupCompanyName"></h3>
             <h4 id="popupPosition"></h4>
             <p id="popupDescription">Description: </p>
             <p id="popupType">Position Type: </p>
@@ -346,7 +343,7 @@
             <p id="popupTerm">Employment Term: </p>
             <p id="popupNational">Must Be a TT National: </p>
             <p id="popupCategory">Category: </p>
-            <p id="popupCandidateType">Desired Candidate Type: </p>
+            <p id="popupCandidateType">Desired Candidate Type: </p> -->
 
             <h2>Interested? Send your resume <a href="#" id="applyBtn">now!</a></h2>
             
@@ -354,7 +351,8 @@
             <div class="popup-form" id="form-popup">
                 <div class="popup-content">
                     <button class="close-btn" id="closeFormBtn">x</button>
-                    <form action="#" method="POST">
+                    <form action="/submit_application" method="POST">
+                        <!-- insert csrf token here? -->
                         <div class="form-group">
                             <label for="full_name">Full Name:</label>
                             <input type="text" id="full_name" name="full_name" required>
@@ -396,7 +394,7 @@
     <script>
     const jobCard = document.getElementById('jobCard');
     const popup = document.getElementById('popup');
-    const closeBtn = document.getElementById('closeBtn');
+    // const closeBtn = document.getElementById('closeBtn');
     const formPopup = document.getElementById('form-popup');
     const openFormBtn = document.getElementById('applyBtn');
     const closeFormBtn = document.getElementById('closeFormBtn');
@@ -406,9 +404,9 @@
         formPopup.style.display = 'none'; 
     });
 
-    closeBtn.addEventListener('click', function() {
-        popup.style.display = 'none';
-    });
+    // closeBtn.addEventListener('click', function() {
+    //     popup.style.display = 'none';
+    // });
 
     openFormBtn.addEventListener('click', function(event) {
         event.preventDefault();
@@ -417,23 +415,6 @@
 
     closeFormBtn.addEventListener('click', function() {
         formPopup.style.display = 'none'; 
-    });
-
-    // Add click event listeners to job listings
-    document.querySelectorAll('.job_card').forEach((jobCard, index) => {
-        jobCard.addEventListener('click', () => {
-            const job = jobs[index]; // Retrieve job information
-            document.getElementById('popupCompanyName').textContent = job.company_name;
-            document.getElementById('popupPosition').textContent = job.position;
-            document.getElementById('popupDescription').textContent += job.description;
-            document.getElementById('popupType').textContent += job.type;
-            document.getElementById('popupRemote').textContent += job.remote;
-            document.getElementById('popupTerm').textContent += job.term;
-            document.getElementById('popupNational').textContent += job.national;
-            document.getElementById('popupCategory').textContent += job.category;
-            document.getElementById('popupCandidateType').textContent += job.candidate_type;
-            document.getElementById('popup').style.display = 'block'; // Display popup
-        });
     });
 
     document.addEventListener("DOMContentLoaded", function() {

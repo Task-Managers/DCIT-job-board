@@ -2,7 +2,7 @@ from App.models import User, Alumni, Admin, Company, Listing
 from App.database import db
 
 
-def add_alumni(username, password, email, alumni_id, contact):
+def add_alumni(username, name, password, email, alumni_id, contact):
 
         # Check if there are no other users with the same username or email values in any other subclass
         if (
@@ -17,7 +17,7 @@ def add_alumni(username, password, email, alumni_id, contact):
         ):
             return None  # Return None to indicate duplicates
 
-        newAlumni= Alumni(username, password, email, alumni_id, contact)
+        newAlumni= Alumni(username, name, password, email, alumni_id, contact)
         try: # safetey measure for trying to add duplicate 
             db.session.add(newAlumni)
             db.session.commit()  # Commit to save the new  to the database

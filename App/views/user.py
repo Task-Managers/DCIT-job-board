@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, jsonify, request, send_from_direct
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, set_access_cookies, current_user as jwt_current_user
 from flask_login import current_user, login_required
 
+from flask_wtf.csrf import generate_csrf
+
 from.index import index_views
 
 from App.controllers import (
@@ -42,6 +44,10 @@ def login_action():
   else:
     flash('Invalid username or password')  # send message to next page
     response = redirect('/')
+
+  csrf_token = generate_csrf()
+  response.headers["X-CSRF-TOKEN"] = csrf_token
+
   print('response headers: ', response.headers)
   return response
 

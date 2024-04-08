@@ -2,6 +2,8 @@ from App.database import db
 from .user import User
 from .listing import categories
 
+from .file import File
+
 # categories = ['Software Engineering', 'Database', 'Programming', 'N/A']
 
 class Alumni(User):
@@ -24,16 +26,21 @@ class Alumni(User):
     # -contact info i.e phone number
     contact = db.Column(db.String(30), nullable = False)
 
-    
+    # full name
+    name = db.Column(db.String(120), nullable = False)
+
+    # relationship with files?
+    files = db.relationship('File', back_populates='alumni', lazy=True)
 
     # categories = ['Software Engineering', 'Database', 'Programming', 'N/A']
     job_category = db.Column(db.String(120))
 
-    def __init__(self, username, password, email, alumni_id, contact):
+    def __init__(self, username, name, password, email, alumni_id, contact):
         super().__init__(username, password, email)
         self.alumni_id = alumni_id
         self.job_category = 'N/A'
         self.contact = contact
+        self.name = name
 
         # if job_categories is None:
         #     self.job_category = 'N/A'

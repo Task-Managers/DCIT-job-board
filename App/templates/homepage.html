@@ -34,6 +34,9 @@
             <div class="form" id="login-form">
                 <h2>Login</h2>
                 <form method="POST" action="/login">
+                    <!-- csrf token -->
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" required>
         
