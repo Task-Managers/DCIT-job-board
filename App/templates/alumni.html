@@ -297,7 +297,7 @@
 
         <div class="search">
             <!-- Search form -->
-            <!-- <form action="{{ url_for('search') }}" method="GET"> -->
+            <form action="" method="GET">
             <form>
                 <input type="search" id="searchInput" name="search" placeholder="Search any job here">
                 <select class="categories" id="category" name="category">
@@ -316,12 +316,12 @@
             <div class="job_details">
                 <div class="text">
                     <h2>{{ job.title }}</h2>
-                    <span>{{ job.company }} - {{ job.type }}</span>
+                    <span>{{ job.company_name }}</span>
                 </div>
             </div>
             <div class="job_salary">
                 <h4>{{ job.salary }}</h4>
-                <span>{{ job.date }}</span>
+                <!-- <span>{{ job.date }}</span> -->
             </div>
         </div>
         {% endfor %}
@@ -329,7 +329,7 @@
           <div class="popup" id="popup">
             <div class="popup-content">
             <button class="close-btn" id="closeBtn">x</button>
-            <h3>{{ job.company }}</h3>
+            <!-- <h3>{{ job.company_name }}</h3> -->
             <h4>{{ job.position }}</h4>
             <p>Description: {{ job.description }}</p>
             <p>Position Type: {{ job.type }}</p>
@@ -338,6 +338,15 @@
             <p>Must Be a TT National: {{ job.national }}</p>
             <p>Category: {{ job.category }}</p>
             <p>Desired Candidate Type: {{ job.candidate_type }}</p>
+            <h3 id="popupCompanyName"></h3>
+            <h4 id="popupPosition"></h4>
+            <p id="popupDescription">Description: </p>
+            <p id="popupType">Position Type: </p>
+            <p id="popupRemote">Remote: </p>
+            <p id="popupTerm">Employment Term: </p>
+            <p id="popupNational">Must Be a TT National: </p>
+            <p id="popupCategory">Category: </p>
+            <p id="popupCandidateType">Desired Candidate Type: </p>
 
             <h2>Interested? Send your resume <a href="#" id="applyBtn">now!</a></h2>
             
@@ -408,6 +417,23 @@
 
     closeFormBtn.addEventListener('click', function() {
         formPopup.style.display = 'none'; 
+    });
+
+    // Add click event listeners to job listings
+    document.querySelectorAll('.job_card').forEach((jobCard, index) => {
+        jobCard.addEventListener('click', () => {
+            const job = jobs[index]; // Retrieve job information
+            document.getElementById('popupCompanyName').textContent = job.company_name;
+            document.getElementById('popupPosition').textContent = job.position;
+            document.getElementById('popupDescription').textContent += job.description;
+            document.getElementById('popupType').textContent += job.type;
+            document.getElementById('popupRemote').textContent += job.remote;
+            document.getElementById('popupTerm').textContent += job.term;
+            document.getElementById('popupNational').textContent += job.national;
+            document.getElementById('popupCategory').textContent += job.category;
+            document.getElementById('popupCandidateType').textContent += job.candidate_type;
+            document.getElementById('popup').style.display = 'block'; // Display popup
+        });
     });
 
     document.addEventListener("DOMContentLoaded", function() {

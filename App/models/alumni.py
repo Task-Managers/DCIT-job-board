@@ -22,16 +22,18 @@ class Alumni(User):
 
     # need to add in columns for:
     # -contact info i.e phone number
+    contact = db.Column(db.String(30), nullable = False)
 
     
 
     # categories = ['Software Engineering', 'Database', 'Programming', 'N/A']
     job_category = db.Column(db.String(120))
 
-    def __init__(self, username, password, email, alumni_id):
+    def __init__(self, username, password, email, alumni_id, contact):
         super().__init__(username, password, email)
         self.alumni_id = alumni_id
         self.job_category = 'N/A'
+        self.contact = contact
 
         # if job_categories is None:
         #     self.job_category = 'N/A'
@@ -85,4 +87,5 @@ class Alumni(User):
             'alumni_id': self.alumni_id,
             'subscribed': self.subscribed,
             'job_category': self.get_categories(),
+            'contact':self.contact,
         }
