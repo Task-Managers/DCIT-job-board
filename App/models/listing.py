@@ -2,6 +2,8 @@ from App.database import db
 from .company import Company
 # from .alumni import Alumni
 
+from sqlalchemy import CheckConstraint
+
 # categories list for possible job categories
 categories = [
     'Software Engineering', 'Database', 'Programming', 'Web Design', 'Machine Learning', 
@@ -28,23 +30,44 @@ class Listing(db.Model):
 
     # need to add in columns for:
     # -salary - integer
+    salary = db.Column(db.Integer(), nullable=False)
+
     # -date - 
     # -position - string? - list from companyform.html
+    position = db.Column(db.String(), nullable=False)
+
+    __table_args__ = (
+        CheckConstraint(position.in_(['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance']), name = 'check_position_value'),
+    )
+
     # -remote - boolean
+    remote = db.Column(db.Boolean, default=False)
+
     # -employment term - string?
+    employmentterm = db.Column(db.String(120), nullable=False)
+
     # -ttnational - boolean
+    ttnational = db.Column(db.Boolean, default=False)
 
     # -desiredcandidate - string?
+    desiredcandidate = db.Column(db.String(120), nullable=False)
+
     # job area?
+    area = db.Column(db.String(120), nullable=False)
     
     # - 
+    # use this to ensure that values are within a certain range/ appropriate values only
+    #  __table_args__ = (
+    #     CheckConstraint(value.in_([1, 0, -1]), name = 'check_vote_value'),
+    # )
 
 
     # Define relationship to Alumni
     applicant = db.relationship('Alumni', secondary='alumni_listings', back_populates='listing')
     # applicants = db.relationship('Alumni', secondary=alumni_listings_association, backref='applied_listings')
 
-    def __init__(self, title, description, company_name, job_categories):
+    def __init__(self, title, description, company_name, job_categories, salary,
+                position, remote, employmentterm, ttnational, desiredcandidate, area):
         self.title = title
         self.description = description
         self.company_name = company_name
@@ -53,6 +76,14 @@ class Listing(db.Model):
             self.job_category = 'N/A'
         else:
             self.validate_and_set_categories(job_categories)
+
+        self.salary = salary
+        self.position = position
+        self.remote = remote
+        self.employmentterm = employmentterm
+        self.ttnational = ttnational
+        self.desiredcandidate = desiredcandidate
+        self.area = area
 
     def get_company(self):
         return self.company_name
@@ -95,4 +126,12 @@ class Listing(db.Model):
             'description':self.description,
             'company_name':self.company_name,
             'job_category':self.get_categories(),
+
+            'salary':self.salary,
+            'position':self.position,
+            'remote':self.remote,
+            'employmentterm':self.employmentterm,
+            'ttnational':self.ttnational,
+            'desiredcandidate':self.desiredcandidate,
+            'area':self.area,
         }

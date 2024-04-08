@@ -8,7 +8,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, current_user as j
 
 from App.controllers import(
     add_admin,
-    get_user_by_username
+    get_user_by_username,
+    get_all_listings,
 )
 
 from App.models import(
@@ -35,12 +36,17 @@ def init():
 # @index_views.route('/app/<int:category>', methods=['GET'])
 @jwt_required()
 def index_page():
+
     username = get_jwt_identity()
     user = get_user_by_username(username)
 
     # need to do:
+    # - return list of job listings
     # - return a list of categories to render in
     # - return a list of listings - flesh out listing model 
+
+    # job listings
+    jobs = get_all_listings()
     
     # url = 'https://wger.de/api/v2/exercisecategory/?format=json'
 
@@ -57,7 +63,7 @@ def index_page():
     # return jsonify({'message': 'Welcome to the app route!', 'user': user}), 200
     if isinstance(user, Alumni):
 
-        return render_template('alumni.html')
+        return render_template('alumni.html', jobs=jobs )
 
     return redirect('/login')
 
