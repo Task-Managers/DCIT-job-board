@@ -335,15 +335,6 @@
 
           <div class="popup" id="popup">
             <div class="popup-content">
-            <!-- <h3 id="popupCompanyName"></h3>
-            <h4 id="popupPosition"></h4>
-            <p id="popupDescription">Description: </p>
-            <p id="popupType">Position Type: </p>
-            <p id="popupRemote">Remote: </p>
-            <p id="popupTerm">Employment Term: </p>
-            <p id="popupNational">Must Be a TT National: </p>
-            <p id="popupCategory">Category: </p>
-            <p id="popupCandidateType">Desired Candidate Type: </p> -->
 
             <h2>Interested? Send your resume <a href="#" id="applyBtn">now!</a></h2>
             
@@ -351,11 +342,15 @@
             <div class="popup-form" id="form-popup">
                 <div class="popup-content">
                     <button class="close-btn" id="closeFormBtn">x</button>
-                    <form action="/submit_application" method="POST">
+                    <form action="/submit_application" method="POST" enctype="multipart/form-data">
                         <!-- insert csrf token here? -->
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                        <input type="hidden" name="job_id" id="jobIdInput"> <!-- Hidden input field for job ID -->
+                        
                         <div class="form-group">
-                            <label for="full_name">Full Name:</label>
-                            <input type="text" id="full_name" name="full_name" required>
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" required>
                         </div>
                         <div class="form-group" id="form-dropdown">
                             <label for="experience">Experience:</label>
@@ -371,17 +366,17 @@
                             <input type="email" id="email" name="email" required>
                         </div>
                         <div class="form-group">
-                            <label for="phone">Phone Number:</label>
-                            <input type="tel" id="phone" name="phone" required>
+                            <label for="contact">Phone Number:</label>
+                            <input type="tel" id="contact" name="contact" required>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="resume">Resume (PDF):</label>
                             <input type="file" id="resume" name="resume" accept=".pdf" required>
                         </div>
                         <div class="form-group">
                             <label for="cover_letter">Cover Letter (PDF):</label>
                             <input type="file" id="cover_letter" name="cover_letter" accept=".pdf" required>
-                        </div>
+                        </div> -->
                         <div class="form-group">
                             <input type="submit" value="Submit Application">
                         </div>
@@ -416,6 +411,20 @@
     closeFormBtn.addEventListener('click', function() {
         formPopup.style.display = 'none'; 
     });
+
+    document.addEventListener("DOMContentLoaded", function() {
+    const jobCards = document.querySelectorAll('.job_card');
+    const applyButtons = document.querySelectorAll('.applyBtn');
+    const jobIdInput = document.getElementById('jobIdInput');
+
+    applyButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            const jobId = button.getAttribute('data-jobid'); // Get the job ID from the data attribute
+            jobIdInput.value = jobId; // Set the job ID as the value of the hidden input field
+            document.getElementById('form-popup').style.display = 'block'; // Show the application form
+        });
+    });
+});
 
     document.addEventListener("DOMContentLoaded", function() {
         const jobCards = document.querySelectorAll('.job_card');

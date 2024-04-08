@@ -41,7 +41,7 @@ def create_app(config_overrides={}):
     CORS(app)
 
     csrf = CSRFProtect(app)
-    csrf.init_app(app)
+    # csrf.init_app(app)
     
     photos = UploadSet('photos', TEXT + DOCUMENTS + IMAGES)
     configure_uploads(app, photos)

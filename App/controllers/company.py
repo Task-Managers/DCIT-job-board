@@ -4,7 +4,7 @@ from App.controllers import get_all_subscribed_alumni
 
 
 
-def add_company(username, company_name, password, email):
+def add_company(username, company_name, password, email, company_address, contact, company_website):
     # Check if there are no other users with the same username or email values in any other subclass
         if (
             Alumni.query.filter_by(username=username).first() is not None or
@@ -18,7 +18,7 @@ def add_company(username, company_name, password, email):
         ):
             return None  # Return None to indicate duplicates
 
-        newCompany= Company(username,company_name, password, email)
+        newCompany= Company(username,company_name, password, email, company_address, contact, company_website)
         try: # safetey measure for trying to add duplicate 
             db.session.add(newCompany)
             db.session.commit()  # Commit to save the new  to the database
@@ -77,7 +77,7 @@ def add_listing(title, description, company_name, #, job_categories=None
         # print('yah')
         return newListing
     except:
-        print('nah')
+        # print('nah')
         db.session.rollback()
         return None
 
