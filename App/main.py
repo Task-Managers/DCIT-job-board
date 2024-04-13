@@ -7,6 +7,8 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
 from datetime import timedelta
 
+from flask_wtf.csrf import CSRFProtect
+
 from App.database import init_db
 from App.config import config
 
@@ -37,6 +39,10 @@ def create_app(config_overrides={}):
     app.config['PREFERRED_URL_SCHEME'] = 'https'
     app.config['UPLOADED_PHOTOS_DEST'] = "App/uploads"
     CORS(app)
+
+    csrf = CSRFProtect(app)
+    # csrf.init_app(app)
+    
     photos = UploadSet('photos', TEXT + DOCUMENTS + IMAGES)
     configure_uploads(app, photos)
     add_views(app)

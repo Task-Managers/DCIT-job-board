@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, jsonify, request, send_from_direct
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, set_access_cookies, current_user as jwt_current_user
 from flask_login import current_user, login_required
 
+from flask_wtf.csrf import generate_csrf
+
 from.index import index_views
 
 from App.controllers import (
@@ -9,6 +11,8 @@ from App.controllers import (
     jwt_authenticate, 
     # jwt_authenticate_admin,
     get_all_users,
+
+    add_company,
 
     get_user_by_username,
 
@@ -27,6 +31,10 @@ user_views = Blueprint('user_views', __name__, template_folder='../templates')
 def login_page():
   return render_template('homepage.html')
 
+@user_views.route('/signup', methods=['GET'])
+def signup_page():
+  return render_template('homepage.html')
+
 @user_views.route('/login', methods=['POST'])
 def login_action():
   data = request.form
@@ -42,44 +50,70 @@ def login_action():
   else:
     flash('Invalid username or password')  # send message to next page
     response = redirect('/')
+
+  csrf_token = generate_csrf()
+  response.headers["X-CSRF-TOKEN"] = csrf_token
+
   print('response headers: ', response.headers)
   return response
 
+@user_views.route('/alumni-signup', methods=['POST'])
+def alumni_signup_action():
+  data = request.form
+  
+  response = None
 
+  try:
+    newAlumni = add_alumni(data['username'], data['password'], data['email'],
+                          data['alumni_id'], data['contact'], data['firstname'], data['lastname'])
 
+    token = login_user(data['username'], data['password'])
 
+    print(token)
 
-# @user_views.route('/login', methods=['POST'])
-# def login_action():
+    response = redirect(url_for('index_views.index_page'))
+    set_access_cookies(response, token)
+    flash('Account created!')
 
-#     data = request.form
-#     response = login(data['username'], data['password'])
+    csrf_token = generate_csrf()
+    response.headers["X-CSRF-TOKEN"] = csrf_token
 
-#     if response:
-#         flash('Logged in successfully!')
-#         print(response)
-#         return redirect('/identify')
-#         # return(current_user)
-#     else:
-#         flash('Invalid username or password')
-#         return redirect('/')
-    
-#     # if user and user.check_password(data['password']):  # check credentials
-#     #     flash('Logged in successfully.')  # send message to next page
+  except Exception:  # attempted to insert a duplicate user
+    db.session.rollback()
+    flash("username or email already exists")  # error message
+    response = redirect(url_for('login_page'))
 
-#     #     # token = create_access_token(identity=username)
-#     #     # response = jsonify(access_token=token)
-#     #     # set_access_cookies(response, token)
+  return response
 
-#     #     # login(user.username, user.password)
-#     #     # return redirect('/app')  # redirect to main page if login successful
-#     #     # return render_template('homepage.html')
+@user_views.route('/company-signup', methods=['POST'])
+def company_signup_action():
+  data = request.form
+  
+  response = None
 
-#     #     return(user.get_json())
-#     #     # return(current_user)
-#     # else:
-#     #     flash('Invalid username or password')  # send message to next page
-#     # return redirect('/')
+  try:
+    # newAlumni = add_alumni(data['username'], data['password'], data['email'],
+    #                       data['alumni_id'], data['contact'], data['firstname'], data['lastname'])
+    newCompany = add_company(data['username'], data['company_name'], data['password'], data['email'],
+                              data['company_address'], data['contact'], data['company_website'])
+    # username, company_name, password, email, company_address, contact, company_website
+    token = login_user(data['username'], data['password'])
+
+    print(token)
+
+    response = redirect(url_for('index_views.index_page'))
+    set_access_cookies(response, token)
+    flash('Account created!')
+
+    csrf_token = generate_csrf()
+    response.headers["X-CSRF-TOKEN"] = csrf_token
+
+  except Exception:  # attempted to insert a duplicate user
+    db.session.rollback()
+    flash("username or email already exists")  # error message
+    response = redirect(url_for('login_page'))
+
+  return response
 
 @user_views.route('/users', methods=['GET'])
 def get_user_page():

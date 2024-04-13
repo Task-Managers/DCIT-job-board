@@ -61,23 +61,23 @@
 </head>
 <header>
     <h2>Job Listings</h2>
-    <button class="add-job-button"><a href="{{ url_for('company_form') }}"> Add Job</a></button>
+    <button class="add-job-button"><a href="/add_listing"> Add Job</a></button>
 </header>
 <body>
     <div class="container">
         {% for job in jobs %}
         <div class="job-listing">
-            <h3>{{ job.company }}</h3>
+            <h3>{{ job.company_name }}</h3>
             <h4>{{ job.position }}</h4>
             <p>Description: {{ job.description }}</p>
-            <p>Position Type: {{ job.type }}</p>
+            <!-- <p>Position Type:  job.type </p> -->
             <p>Remote: {{ job.remote }}</p>
-            <p>Employment Term: {{ job.employment_term }}</p>
-            <p>Must Be a TT National: {{ job.tt_national }}</p>
-            <p>Category: {{ job.category }}</p>
-            <p>Desired Candidate Type: {{ job.candidate_type }}</p>
+            <p>Employment Term: {{ job.employmentterm }}</p>
+            <p>Must Be a TT National: {{ job.ttnational }}</p>
+            <p>Category: {{ job.job_category }}</p>
+            <!-- <p>Desired Candidate Type:  job.candidate_type </p> -->
             <div class="job-actions">
-                <button class= "viewapp"><a href="{{ url_for('view_applicants_company') }}">View Applicants</a></button>
+                <button class= "viewapp"><a href="url_for('view_applicants_company')">View Applicants</a></button>
                 <button>Request Edits</button>
                 <button class="request-deletion-btn" onclick="confirmDeletion(this)">Request Deletion</button>
             </div>

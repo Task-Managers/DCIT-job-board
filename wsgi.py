@@ -5,7 +5,7 @@ from flask.cli import with_appcontext, AppGroup
 from App.database import db, get_migrate
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users, get_all_admins, get_all_admins_json,
-     add_admin, add_alumni, add_company, add_listing, add_categories,
+     add_admin, add_alumni, add_company, add_listing, add_categories, remove_categories,
      get_all_companies, get_all_companies_json,
      get_all_alumni, get_all_alumni_json, get_all_listings, get_all_listings_json, get_company_listings, get_all_subscribed_alumni,
      subscribe_action, is_alumni_subscribed, send_notification, apply_listing, get_all_applicants,
@@ -23,10 +23,11 @@ from App.controllers import ( create_user, get_all_users_json, get_all_users, ge
 
 # !!DO OUT VIEWS AND RENDERING!!
 # add in way to get applicants for a listing by company - so company can view list applicants
-# flesh out models - listings!!, alumni(contact info?)
 # integration tests
 # admin deletion and editing of company requests? might just cut to make simpler - if editing/deleting a listing have to make sure applicants dont get messed up either
 # mailchimp???
+# solve missing csrf token errors so some forms can work properly
+# file submission for resume and cover letters
 
 app = create_app()
 migrate = get_migrate(app)
@@ -41,25 +42,34 @@ def initialize():
     add_admin('bob', 'bobpass', 'bob@mail')
 
     # add in alumni
-    add_alumni('rob', 'robpass', 'rob@mail', '123456789', '1868-333-4444')
+    add_alumni('rob', 'robpass', 'rob@mail', '123456789', '1868-333-4444', 'robfname', 'roblname')
 
     # add_alumni('rooooob', 'robpass', 'roooooob@mail', '123456089')
 
     add_categories('123456789', ['Database'])
     # print('test')
 
+    # remove_categories('123456789', ['N/A'])
+    # remove_categories('123456789', ['Database'])
+    
+
     # subscribe rob
     subscribe_action('123456789')
 
     # add in companies
-    add_company('rep.name', 'company1', 'compass', 'company@mail')
-    add_company('rep.name2', 'company2', 'compass', 'company@mail2')
+    add_company('company1', 'company1', 'compass', 'company@mail',  'company_address', 'contact', 'company_website.com')
+    add_company('company2', 'company2', 'compass', 'company@mail2',  'company_address2', 'contact2', 'company_website2.com')
 
     # add in listings
     # listing1 = add_listing('listing1', 'job description', 'company2')
     # print(listing1, 'test')
+    add_listing('listing1', 'job description1', 'company1',
+                8000, 'Part-time', True, 'employmentTerm!', True, 'desiredCandidate?', 'Curepe', ['Database', 'Programming', 'butt'])
+
     add_listing('listing2', 'job description', 'company2',
                 4000, 'Full-time', True, 'employmentTerm?', True, 'desiredCandidate?', 'Curepe', ['Database', 'Programming', 'butt'])
+
+    
 
 
     # print(get_all_listings_json())
@@ -198,7 +208,7 @@ def add_categories_command(alumni_id, job_categories):
 # flask alumni apply
 @alumni_cli.command("apply", help="Applies an alumni to a job listing")
 @click.argument('alumni_id', default='123456789')
-@click.argument('listing_title', default='listing2')
+@click.argument('listing_title', default='listing1')
 def apply_listing_command(alumni_id, listing_title):
     alumni = apply_listing(alumni_id, listing_title)
 
