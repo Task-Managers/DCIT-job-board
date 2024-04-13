@@ -5,7 +5,7 @@ from flask.cli import with_appcontext, AppGroup
 from App.database import db, get_migrate
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users, get_all_admins, get_all_admins_json,
-     add_admin, add_alumni, add_company, add_listing, add_categories,
+     add_admin, add_alumni, add_company, add_listing, add_categories, remove_categories,
      get_all_companies, get_all_companies_json,
      get_all_alumni, get_all_alumni_json, get_all_listings, get_all_listings_json, get_company_listings, get_all_subscribed_alumni,
      subscribe_action, is_alumni_subscribed, send_notification, apply_listing, get_all_applicants,
@@ -48,6 +48,10 @@ def initialize():
 
     add_categories('123456789', ['Database'])
     # print('test')
+
+    # remove_categories('123456789', ['N/A'])
+    # remove_categories('123456789', ['Database'])
+    
 
     # subscribe rob
     subscribe_action('123456789')

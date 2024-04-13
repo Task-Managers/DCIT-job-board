@@ -39,7 +39,8 @@ class Alumni(User):
     def __init__(self, username, password, email, alumni_id, contact, firstname, lastname):
         super().__init__(username, password, email)
         self.alumni_id = alumni_id
-        self.job_category = 'N/A'
+        # self.job_category = 'N/A'
+        self.job_category = None
         self.contact = contact
         self.firstname = firstname
         self.lastname = lastname
@@ -76,6 +77,10 @@ class Alumni(User):
             self.job_category = '|'.join(categories)
         else:
             print(f"Category '{category}' already exists.")
+
+        # if 'N/A' in categories:
+            # print('na in categories')
+
 
     def remove_category(self, category):
         categories = self.get_categories()

@@ -81,6 +81,17 @@ def add_categories(alumni_id, job_categories):
         db.session.rollback()
         return None   
 
+def remove_categories(alumni_id, job_categories):
+    alumni = get_alumni(alumni_id)
+    try:
+        for category in job_categories:
+            alumni.remove_category(category)
+            db.session.commit()
+        return alumni
+    except:
+        db.session.rollback()
+        return None
+
 # apply to an application
 def apply_listing(alumni_id, listing_title):
     from App.controllers import get_listing_title
