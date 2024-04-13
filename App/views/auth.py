@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, jsonify, request, send_from_directory, flash, redirect, url_for
-from flask_jwt_extended import jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies, current_user as jwt_current_user
-from flask_login import login_required, login_user, current_user, logout_user
+from flask import Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for
+from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies
 
 from.index import index_views
 
@@ -52,9 +51,10 @@ def identify_page():
 
 @auth_views.route('/logout', methods=['GET'])
 def logout_action():
-    data = request.form
-    user = login(data['username'], data['password'])
-    return 'logged out!'
+    response = redirect(request.referrer) 
+    flash("Logged Out!")
+    unset_jwt_cookies(response)
+    return response
 
 '''
 API Routes
